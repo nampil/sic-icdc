@@ -1,0 +1,7 @@
+{
+    "env": {
+        "MONGO_USER": "nohelmadrid",
+        "MONGO_PASSWORD": "17abdi.sofi23",
+        "MONGO_DATABASE": "icdcMembers"
+    }
+}

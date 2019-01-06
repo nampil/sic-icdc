@@ -1,0 +1,36 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const graphalHttp = require('express-graphql');
+const mongoose = require('mongoose');
+
+const graphQlSchema = require('./graphql/schema/index');
+const graphQLResolvers = require('./graphql/resolvers/index');
+const isAuth = require('./middleware/is-auth');
+const app = express();
+
+
+app.use(bodyParser.json());
+
+app.use(isAuth);
+
+app.use('/graphql', graphalHttp({
+    schema: graphQlSchema,
+    rootValue: graphQLResolvers,
+    graphiql: true
+
+}));
+
+app.set('port', process.env.PORT || 5000)
+
+app.use(express.static(__dirname + '/public'))
+
+
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@ndev01-quhgy.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true`, {
+        useNewUrlParser: true
+    })
+    .then(() => {
+        console.log('Connected to DB...');
+        app.listen(app.get('port'));
+    }).catch(err => {
+        console.log(err)
+    });
