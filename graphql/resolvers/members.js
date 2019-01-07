@@ -13,7 +13,9 @@ module.exports = {
             const members = await Member.find(args)
 
             return members.map(member => {
+
                 return transforMember(member);
+
             })
         } catch (err) {
             throw err

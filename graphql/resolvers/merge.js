@@ -21,8 +21,9 @@ const members = async membersIds => {
 };
 
 
-const user = async userId => {
+const user = async (userId) => {
     const user = await User.findById(userId)
+
     try {
         return { ...user._doc,
             _id: user.id,
@@ -34,6 +35,7 @@ const user = async userId => {
 };
 
 const transforMember = member => {
+
     return { ...member._doc,
         _id: member.id,
         bdate: dateToString(member._doc.bdate),

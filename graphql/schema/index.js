@@ -9,7 +9,7 @@ type Member {
     address: String!
     bdate: String!
     relatives: [String!]
-    gender: String!
+    gender: String
     serveIn: [String]
     createdBy: User!
     
@@ -40,7 +40,7 @@ input MemberInput {
     address: String!
     bdate: String!
     relatives: [String!]
-    gender: String!
+    gender: String
     serveIn: [String]
 
 }
