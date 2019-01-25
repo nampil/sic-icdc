@@ -6,6 +6,8 @@ module.exports = buildSchema(`
 type Member {
     _id: ID!
     name: String!
+    tel: String
+    email: String
     address: String!
     bdate: String!
     relatives: [String!]
@@ -37,6 +39,8 @@ input UserInput{
 
 input MemberInput {
     name: String!
+    tel: String
+    email: String
     address: String!
     bdate: String!
     relatives: [String!]
@@ -45,9 +49,23 @@ input MemberInput {
 
 }
 
+input MemberInputUpdate {
+    name: String
+    tel: String
+    email: String
+    address: String
+    bdate: String
+    relatives: [String]
+    gender: String
+    serveIn: [String]
+
+}
+
 type RootQuery {
     members(_id: ID,
         name: String,
+        tel: String,
+        email: String,
         address: String,
         bdate: String,
         relatives: [String!],
@@ -56,11 +74,13 @@ type RootQuery {
     users: [User!]!
     user(name: String, userId: String): User!
     login(email: String!, password: String!): AuthData!
+    relogin:AuthData!
 }
 type RootMutation {
     createMember(memberInput: MemberInput): Member
     createUser(userInput: UserInput): User
     deleteMember(memberId: ID!): Member!
+    updateMember(memberId: ID!, memberInputUpdate: MemberInputUpdate): Member!
 }
 schema {
     query: RootQuery

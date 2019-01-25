@@ -105,5 +105,40 @@ module.exports = {
             tokenExpiration: 1
         }
 
+    },
+    relogin: async (args, req) => {
+
+        if (!req.isAuth) {
+            throw new Error('No Autorizado')
+        }
+
+        const authHeader = req.get('Authorization');
+
+        const oldToken = authHeader.split(' ')[1];
+
+        let decodedOldToken;
+        try {
+            decodedOldToken = jwt.verify(oldToken, '17abdi.sofi23.SECRET')
+        } catch (err) {
+
+        }
+
+        if (decodedOldToken) {
+            const newtoken = await jwt.sign({
+                userId: decodedOldToken.userId,
+                email: decodedOldToken.email
+            }, '17abdi.sofi23.SECRET', {
+                expiresIn: '1h'
+            });
+
+
+            return {
+                userId: decodedOldToken.userId,
+                token: newtoken,
+                tokenExpiration: 1
+            }
+
+        }
+
     }
 }

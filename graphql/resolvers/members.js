@@ -8,7 +8,11 @@ const {
 
 
 module.exports = {
-    members: async (args) => {
+    members: async (args, req) => {
+        if (!req.isAuth) {
+            console.log("No Paso autorizacion fetching members")
+            throw new Error('No Autorizado')
+        }
         try {
             const members = await Member.find(args)
 
@@ -25,14 +29,17 @@ module.exports = {
         if (!req.isAuth) {
             throw new Error('No Autorizado')
         }
+        console.log(req.userId)
         const member = new Member({
             name: args.memberInput.name,
+            tel: args.memberInput.tel,
+            email: args.memberInput.email,
             address: args.memberInput.address,
             bdate: new Date(args.memberInput.bdate),
             relatives: args.memberInput.relatives,
             gender: args.memberInput.gender,
             serveIn: args.memberInput.serveIn,
-            createdBy: req.UserId
+            createdBy: req.userId
         });
         let createdMembers;
         try {
@@ -40,7 +47,7 @@ module.exports = {
                 .save()
 
             createdMembers = transforMember(result);
-            const creator = await User.findById(req.UserId);
+            const creator = await User.findById(req.userId);
 
             if (!creator) {
                 throw new Error('User not found.');
@@ -55,7 +62,10 @@ module.exports = {
             throw err
         }
     },
-    deleteMember: async args => {
+    deleteMember: async (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('No Autorizado')
+        }
         let memberToDelete;
         try {
 
@@ -69,6 +79,36 @@ module.exports = {
                 _id: args.memberId
             })
             return memberToDelete
+        } catch (err) {
+            throw err
+
+        }
+    },
+    updateMember: async (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('No Autorizado')
+        }
+
+        try {
+
+            const member = await Member.findById(args.memberId)
+            if (!member) {
+                throw new Error('No se encontro el miembro para actualizar')
+            }
+
+
+            member.name = args.memberInputUpdate.name
+            member.email = args.memberInputUpdate.email
+            member.tel = args.memberInputUpdate.tel
+            member.address = args.memberInputUpdate.address
+            member.bdate = args.memberInputUpdate.bdate
+            member.gender = args.memberInputUpdate.gender
+            member.serveIn = args.memberInputUpdate.serveIn
+            member.relatives = args.memberInputUpdate.relatives
+            member.createdBy = req.UserId
+
+            await member.save()
+            return member
         } catch (err) {
             throw err
 

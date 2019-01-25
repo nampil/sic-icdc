@@ -12,6 +12,12 @@ const memberSchema = new Schema({
         type: String,
         required: true
     },
+    tel: {
+        type: String,
+    },
+    email: {
+        type: String,
+    },
     bdate: {
         type: Date,
         required: true
@@ -20,7 +26,8 @@ const memberSchema = new Schema({
         type: String,
         required: true
     },
-    relatives: [{
+    relatives: [String],
+    serveIn: [{
         type: String
     }],
     createdBy: {
