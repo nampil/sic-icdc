@@ -19,9 +19,7 @@
               :value="hasErr"
               type="error"
               transition="scale-transition"
-            >
-              {{errMsg}}
-            </v-alert>
+            >{{errMsg}}</v-alert>
 
             <v-text-field
               prepend-icon="mdi-account"
@@ -46,37 +44,35 @@
               type="submit"
             >Enviar</v-btn>
             <v-btn
-              color="primary"
+              color="tertiary"
               class="ma-2"
               @click="clearForm"
             >Cancelar</v-btn>
           </v-form>
         </material-card>
-
       </v-flex>
     </v-layout>
   </div>
 </template>
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import axios from 'axios'
+import { mapState } from 'vuex'
 
 export default {
-  name: "login",
+  name: 'login',
   data() {
     return {
-      usuario: "",
-      password: "",
+      usuario: '',
+      password: '',
       show1: false,
       rules: {
-        required: value => !!value || "Necesario."
+        required: value => !!value || 'Necesario.'
       },
-      errMsg: "",
+      errMsg: '',
       hasErr: false
-    };
+    }
   },
   computed: {
-    
     credentials() {
       const authQuery = {
         query: `
@@ -88,20 +84,22 @@ export default {
                         userId
                         token
                         tokenExpiration
+                        name
+                        role
                     }
                 }
             `
-      };
-      return authQuery;
+      }
+      return authQuery
     }
   },
   methods: {
     clearForm() {
-      this.usuario = "";
-      this.password = "";
-      this.hasErr = false;
-      this.errMsg = "";
-      this.$refs.form.reset();
+      this.usuario = ''
+      this.password = ''
+      this.hasErr = false
+      this.errMsg = ''
+      this.$refs.form.reset()
     },
     submit() {
       if (
@@ -110,19 +108,42 @@ export default {
         this.usuario.trim().legth === 0 ||
         this.password.trim().legth === 0
       ) {
-        this.hasErr = true;
-        this.errMsg = "Todos los campos son requeridos";
+        this.hasErr = true
+        this.errMsg = 'Todos los campos son requeridos'
       } else {
+        this.$store.commit('loading', true)
         this.$store
-          .dispatch("login", this.credentials)
+          .dispatch('login', this.credentials)
           .then(res => {
-            this.$store.dispatch("startTime");
-            this.$router.push({ name: "Escritorio" });
+            if (res.status === 200 || res.status === 201) {
+              this.$store.dispatch('startTime')
+              this.$store.dispatch('loadData')
+              this.$router.push({ name: 'Escritorio' })
+            } else {
+              this.$store.dispatch('toggleAlert', {
+                msg: `Hubo un problema. Error: ${res.status} || ${
+                  res.statusText
+                }`,
+                class: 'warning',
+                active: true
+              })
+            }
+            this.$store.commit('loading', false)
+            return res
           })
-          .catch(err => console.log(err));
-        this.clearForm();
+          .then(res => {
+            this.$store.dispatch('toggleAlert', {
+              msg: `Bienvenido ${this.$store.state.auth.name}`,
+              class: 'success',
+              active: true
+            })
+          })
+          .catch(err => console.log(err))
+
+        this.clearForm()
+        this.$store.commit('loading', false)
       }
     }
   }
-};
+}
 </script>

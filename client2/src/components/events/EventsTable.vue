@@ -1,13 +1,13 @@
 <template>
   <material-card
-    color="info"
-    title="Lista de Miembros"
+    color="accent"
+    title="Lista de Eventos"
     text="Hasta la fecha"
   >
     <v-card-title>
       <v-text-field
         v-model="search"
-        append-icon="mdi-account-search"
+        append-icon="mdi-calendar-search"
         label="Buscar"
         single-line
         hide-details
@@ -37,24 +37,36 @@
         slot="items"
         slot-scope="{ index, item }"
       >
-        <td>{{ item.name }}</td>
-        <td class="text-xs-center">{{ item.tel }}</td>
-        <td class="text-xs-center">{{ item.bdate }}</td>
+        <td>{{ item.eventDate }}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.createdBy.name }}</td>
         <td class="text-xs-center">
           <v-btn
+            class="action-btn"
             ripple
-            dark
             icon
-            color="primary"
-            @click="goToMember(item._id)"
+            dark
+            color="secondary"
+            @click="goToAdminEvent(item._id)"
           >
-            <v-icon>mdi-account-edit</v-icon>
+            <v-icon>mdi-calendar</v-icon>
           </v-btn>
           <v-btn
+            class="action-btn"
+            ripple
+            icon
+            dark
+            color="primary"
+            @click="goToEvent(item._id)"
+          >
+            <v-icon>mdi-calendar-edit</v-icon>
+          </v-btn>
+          <v-btn
+            class="action-btn"
             ripple
             icon
             color="danger"
-            @click="alertDeleteMember(item._id)"
+            @click="alertDeleteEvent(item._id)"
             slot="activator"
             dark
           >
@@ -64,7 +76,7 @@
       </template>
     </v-data-table>
     <v-dialog
-      v-model="showAlertDeleteMember"
+      v-model="showAlertDeleteEvent"
       persistent
       max-width="390"
     >
@@ -72,17 +84,17 @@
         <v-card-title
           dark
           class="headline error white--text"
-        >¿Desea eliminar este miembro?</v-card-title>
-        <v-card-text>Presione Aceptar para eliminar definitivamente a este miembro.</v-card-text>
+        >¿Desea eliminar este evento?</v-card-title>
+        <v-card-text>Presione Aceptar para eliminar definitivamente este evento.</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="info"
-            @click="resetDeleteMember"
+            @click="resetDeleteEvent"
           >Cancelar</v-btn>
           <v-btn
             color="error"
-            @click="deleteMember"
+            @click="deleteEvent"
             :disabled="isLoading"
             :loading="isLoading"
           >Aceptar</v-btn>
@@ -95,29 +107,26 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'MembersTable',
+  name: 'EventsTable',
   data: () => ({
-    deleteMemberId: null,
-    showAlertDeleteMember: false,
+    deleteEventId: null,
+    showAlertDeleteEvent: false,
     search: '',
     headers: [
       {
         sortable: true,
-        text: 'Nombre',
-        value: 'name'
+        text: 'Fecha y Hora',
+        value: 'eventDate'
       },
-
       {
-        sortable: false,
-        text: 'Teléfono',
-        value: 'tel',
-        class: 'text-xs-center'
+        sortable: true,
+        text: 'Titulo',
+        value: 'title'
       },
       {
         sortable: false,
-        text: 'F.Nac.',
-        value: 'dbate',
-        class: 'text-xs-center'
+        text: 'Creador',
+        value: 'createdBy.name'
       },
       {
         sortable: false,
@@ -130,53 +139,57 @@ export default {
   }),
   computed: {
     items() {
-      const items = this.$store.state.members
+      const items = this.$store.state.events
       function pad(n) {
         return n < 10 ? '0' + n : n
       }
       return items.map(item => {
         return {
           ...item,
-          bdate:
-            pad(new Date(item.bdate).getUTCDate()) +
-            '/' +
-            pad(new Date(item.bdate).getUTCMonth() + 1) +
-            '/' +
-            new Date(item.bdate).getUTCFullYear()
+          eventDate: new Date(item.eventDate).toLocaleTimeString(['es-VE'], {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
         }
       })
     },
     ...mapState(['isLoading'])
   },
   methods: {
-    resetDeleteMember() {
-      this.deleteMemberId = null
-      this.showAlertDeleteMember = false
+    resetDeleteEvent() {
+      this.deleteEventId = null
+      this.showAlertDeleteEvent = false
     },
-    goToMember(id) {
-      this.$router.push('/members/member/' + id)
+    goToEvent(id) {
+      this.$router.push('/events/event/' + id)
+    },
+    goToAdminEvent(id) {
+      this.$router.push('/events/event/' + id + '/admin')
+    },
+    alertDeleteEvent(id) {
+      this.deleteEventId = id
+      this.showAlertDeleteEvent = true
     },
 
-    alertDeleteMember(id) {
-      this.deleteMemberId = id
-      this.showAlertDeleteMember = true
-    },
-
-    deleteMember() {
+    deleteEvent() {
       this.$store.dispatch('setLoading', true)
       this.$store
-        .dispatch('deleteMember', this.deleteMemberId)
+        .dispatch('deleteEvent', this.deleteEventId)
         .then(async res => {
-          await this.$store.dispatch('fetchMembers')
+          await this.$store.dispatch('fetchEvents')
           return res
         })
         .then(res => {
-          const deleteMember = res.data.data.deleteMember
+          const deletedEvent = res.data.data.deleteEvent
+          console.log(deletedEvent)
           if (res.status === 200) {
             this.$store.dispatch('toggleAlert', {
               active: true,
               class: 'error',
-              msg: `El miembro ${deleteMember.name} fue borrado exitosamente`
+              msg: `El evento ${deletedEvent.title} fue borrado exitosamente`
             })
           } else {
             this.$store.dispatch('showAlert', {
@@ -186,9 +199,20 @@ export default {
             })
           }
           this.$store.dispatch('setLoading', false)
-          this.showAlertDeleteMember = false
+          this.showAlertDeleteEvent = false
         })
     }
   }
 }
 </script>
+<style lang="scss">
+.action-btn.v-btn {
+  margin-left: 5px;
+}
+
+.v-icon.mdi.mdi-chevron-right.theme--light,
+.v-icon.mdi.mdi-chevron-left.theme--light {
+  color: rgba(0, 0, 0, 0.54);
+}
+</style>
+

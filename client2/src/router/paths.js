@@ -13,8 +13,8 @@ export default [{
     }
   },
   {
-    path: '/user-profile',
-    name: 'User Profile',
+    path: '/users/user/:id',
+    name: 'Perfil de Usuario',
     view: 'UserProfile',
     meta: {
       requiresAuth: true
@@ -29,15 +29,16 @@ export default [{
     }
   },
   {
-    path: '/member/:id',
+    path: '/members/member/:id',
     name: 'Miembro',
     view: 'Member',
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      loadMemberFirst: true
     }
   },
   {
-    path: '/newmember',
+    path: '/members/newmember',
     name: 'Añadir Miembro',
     view: 'NewMember',
     meta: {
@@ -45,9 +46,36 @@ export default [{
     }
   },
   {
-    path: '/table-list',
-    name: 'Table List',
-    view: 'TableList'
+    path: '/events',
+    name: 'Eventos',
+    view: 'Events',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/events/newevent',
+    name: 'Nuevo Evento',
+    view: 'NewEvent',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/events/event/:id',
+    name: 'Evento',
+    view: 'Event',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/events/event/:id/admin',
+    name: 'Administracion de Evento',
+    view: 'AdminEvent',
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/typography',
@@ -79,6 +107,14 @@ export default [{
     path: '/register',
     name: 'Registro de Usuario',
     view: 'Register',
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/users',
+    name: 'Usuarios',
+    view: 'Users',
     meta: {
       requiresAuth: true
     }

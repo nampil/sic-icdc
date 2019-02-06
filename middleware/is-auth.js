@@ -30,6 +30,7 @@ module.exports = (req, res, next) => {
     console.log("Por IsAuth todo working")
     req.isAuth = true;
     req.userId = decodedToken.userId;
+
     next();
 
 }

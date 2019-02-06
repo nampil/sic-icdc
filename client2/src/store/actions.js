@@ -8,24 +8,107 @@ let timeToLoginAlert
 function StopTime(id) {
   clearTimeout(id)
 }
-
 export default {
-  //
-  fetchMembers({
+  fetchGuests({
     commit,
     state
   }) {
     const query = {
       query: `{
+        guests{
+          _id
+          name
+          tel
+          email
+          bdate
+          gender
+          invitedBy
+          createdBy{
+            _id
+            name
+          }
+        }
+      }`
+    }
+
+    const headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      return axios.post('/api/', query, headers)
+        .then(res => {
+          if (!res.status === 200 || !res.status === 201) {
+            throw new Error("fetching Guests failed with status: " + res.status + " & statusText:  " + res.statusText)
+          }
+          commit('setGuests', res.data.data.guests)
+
+          return res
+
+        }).then(res => {
+          resolve(res)
+        }).catch(err => {
+          console.error(err)
+          reject(err)
+        })
+    })
+
+
+  },
+  fetchUsers({
+    commit,
+    state
+  }) {
+    const query = {
+      query: `{
+        users {
+          _id
+          name
+          email
+          role
+          
+        }
+      }`
+    }
+    const headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+    return new Promise((resolve, reject) => {
+      axios.post('/api/', query, headers)
+        .then(res => {
+          commit('setUsers', res.data.data.users)
+          resolve(res)
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
+
+  },
+
+  fetchMembers({
+    commit,
+    state
+  }) {
+
+    const query = {
+      query: `{
         members{
           _id
-          name,
-          tel,
-          email,
-          bdate,
-          address,
-          gender,
-          serveIn,
+          name
+          tel
+          email
+          bdate
+          address
+          gender
+          serveIn
           relatives
         }
       }`
@@ -36,14 +119,106 @@ export default {
         Authorization: 'Bearer ' + state.auth.token
       }
     }
-    axios.post('/api/', query, headers)
-      .then((res) => {
-        commit('setMembers', res.data.data.members)
+    return new Promise((resolve, reject) => {
+      axios.post('/api/', query, headers)
+        .then((res) => {
 
-      }).catch(error => {
-        console.log(error)
-      })
+
+          const formattedmembers = res.data.data.members.map(member => {
+
+            return {
+              ...member,
+              address: member.address !== 'undefined' ? member.address : '',
+              email: member.email !== 'undefined' ? member.email : '',
+              tel: member.tel !== 'undefined' ? member.tel : '',
+            }
+          })
+
+
+          if (!res.status === 200 || !res.status === 201) {
+            throw new Error("fetching Members failed with status: " + res.status + " & statusText:  " + res.statusText)
+          }
+          const members =
+            commit('setMembers', formattedmembers)
+          return res
+
+        })
+        .then(res => {
+          resolve(res)
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
   },
+
+  fetchEvents({
+    commit,
+    state
+  }) {
+
+    const headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+    const query = {
+      query: `{
+          events{
+            _id
+            title
+            eventDate
+            endDate
+            place
+            description
+            cordinator
+            staffAuv
+            staffMav
+            staffProto
+            staffDarte
+            staffEci
+            staffVar
+            active
+            guests{
+              _id
+              name
+            }
+            memberAsist{
+              name
+              _id
+            }
+            createdBy{
+              _id
+              name
+            }
+          }    
+        
+      }`
+
+    }
+    return new Promise((resolve, reject) => {
+      axios.post('/api/', query, headers)
+        .then(res => {
+          if (!res.status === 0 || !res.status === 201) {
+            throw new Error("fetch Events failed with status: " + res.status + " & statusText:  " + res.statusText)
+          }
+          commit('setEvents', res.data.data.events)
+          return res
+        })
+        .then(res => {
+          resolve(res)
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
+
+  },
+
+
   login({
     commit
   }, credentials) {
@@ -64,8 +239,9 @@ export default {
           localStorage.setItem('token', auth.token)
           localStorage.setItem('userId', auth.userId)
           localStorage.setItem('tokenExpiration', auth.tokenExpiration)
+          localStorage.setItem('name', auth.name)
           commit('setAuth', auth)
-          resolve()
+          resolve(res)
         })
         .catch(err => {
           reject(err)
@@ -77,9 +253,8 @@ export default {
   logout({
     commit
   }) {
-    window.localStorage.removeItem('token')
-    window.localStorage.removeItem('userId')
-    window.localStorage.removeItem('tokenExpiration')
+
+    localStorage.clear();
     commit('destroyAuth')
 
   },
@@ -125,6 +300,8 @@ export default {
           userId
           token
           tokenExpiration
+          name
+          role
         }
       }`
     }
@@ -139,7 +316,7 @@ export default {
       .post("/api/", reLoginQuery, headers)
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Failed!");
+          throw new Error("relogin Failed!");
         }
 
         const auth = res.data.data.relogin
@@ -147,19 +324,52 @@ export default {
         localStorage.setItem('token', auth.token)
         localStorage.setItem('userId', auth.userId)
         localStorage.setItem('tokenExpiration', auth.tokenExpiration)
+        localStorage.setItem('name', auth.name)
         commit('setAuth', auth)
+
         commit('loginAlert', false)
 
         return res
 
       }).then(res => {
+        dispatch('loadData')
         dispatch('startTime')
-        console.log('relogin, retimer')
+
       })
       .catch(err => {
 
         console.log(err)
       });
+
+  },
+
+  deleteUser: ({
+    state
+  }, id) => {
+    const query = {
+      query: `mutation {
+        deleteUser(userId: "${id}"){
+          _id
+          name
+        }
+      }`
+    }
+    const headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      axios.post('/api/', query, headers)
+        .then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject()
+          console.log(err)
+        })
+    })
 
   },
   deleteMember: ({
@@ -190,5 +400,209 @@ export default {
         })
     })
 
+  },
+  createMember({
+    dispatch,
+    state
+  }, member) {
+    const query = {
+      query: `
+        mutation {
+      createMember (
+        memberInput:{
+          name: "${member.name}",
+          tel: "${member.tel}",
+          address:"${member.address}",
+          bdate:"${member.bdate}",
+          gender: "${member.gender}",
+          email: "${member.email}",
+          relatives: ${JSON.stringify(member.relatives)},
+          serveIn: ${JSON.stringify(member.serveIn)}
+          })
+        {
+          name
+        }
+}`
+    }
+
+    const headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      axios
+        .post('/api/', query, headers)
+        .then(async res => {
+          await dispatch('fetchMembers')
+          resolve(res)
+          return res
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
+
+  },
+  createEvent({
+    dispatch,
+    state
+  }, event) {
+    const query = {
+      query: `
+        mutation {
+          createEvent(eventInput:{
+            title: "${event.title}",
+            eventDate:"${event.eventDate}",
+            endDate: "${event.endDate}",
+            place: "${event.place}",
+            description: "${event.description}",
+            cordinator: "${event.cordinator}",
+            staffAuv:${JSON.stringify(event.staffAuv)},
+            staffMav:${JSON.stringify(event.staffMav)},
+            staffProto:${JSON.stringify(event.staffProto)},
+            staffDarte:${JSON.stringify(event.staffDarte)},
+            staffEci: ${JSON.stringify(event.staffEci)},
+            staffVar: ${JSON.stringify(event.staffVar)}
+          })
+          {
+            _id
+          }
+        
+      }`
+    }
+
+    const headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+    return new Promise((resolve, reject) => {
+      axios.post("/api/", query, headers)
+        .then(res => {
+          console.log(res)
+          if (res.status !== 200 && res.status !== 201) {
+            throw new Error("Create new event failed!");
+          }
+          dispatch('fetchEvents')
+
+          return res
+
+        }).then(res => {
+          resolve(res)
+        })
+        .catch(err => {
+          reject(err)
+          console.log(err);
+
+        })
+    })
+  },
+  deleteEvent: ({
+    state
+  }, id) => {
+
+    const query = {
+      query: `mutation {
+        deleteEvent(eventId: "${id}"){
+          _id
+          title
+        }
+      }`
+    }
+    const headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+    return new Promise((resolve, reject) => {
+      axios.post('/api/', query, headers)
+        .then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject()
+          console.log(err)
+        })
+    })
+
+  },
+  createGuest({
+    commit,
+    state
+  }, guest) {
+    const name = guest.name ? `name: "${guest.name}"` : ''
+    const tel = guest.tel ? `tel: "${guest.tel}"` : ''
+    const email = guest.email ? `email: "${guest.email}"` : ''
+    const bdate = guest.bdate ? `bdate: "${guest.bdate}"` : ''
+    const gender = guest.gender ? `gender: "${guest.gender}"` : ''
+    const invitedBy = guest.invitedBy ? `invitedBy: "${guest.invitedBy}"` : ''
+
+    const queryDos = {
+      query: ` mutation { createGuest(guestInput: {` + name + tel + email + bdate + gender + invitedBy + `}){_id, name}}`
+    }
+    const headers = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+    return new Promise((resolve, reject) => {
+      axios.post('/api/', queryDos, headers).then(res => {
+        resolve(res)
+      }).catch(err => {
+        console.log(err)
+        reject(err)
+      })
+    })
+  },
+
+
+
+  async loadData({
+    commit,
+    dispatch
+  }) {
+    let counter = 0
+    commit('loading', true)
+    await dispatch('fetchEvents')
+      .then(res => {
+        console.log('events fetched')
+        counter++
+      })
+      .catch(err => console.log(err))
+
+    await dispatch('fetchMembers')
+      .then(res => {
+        counter++
+        console.log('members fetched')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    await dispatch('fetchGuests')
+      .then(res => {
+        counter++
+        console.log('guests fetched')
+      })
+      .catch(err => console.log(err))
+
+    await dispatch('fetchUsers')
+      .then(res => {
+        counter++
+        console.log('users fetched')
+      })
+      .catch(err => console.log(err))
+
+    if (counter === 4) {
+      console.log('Data loaded');
+
+      commit('loading', false)
+    }
   }
 }

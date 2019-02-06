@@ -1,26 +1,21 @@
 <template>
   <v-app>
-    <core-filter />
+    <core-filter/>
 
-    <core-toolbar />
+    <core-toolbar/>
 
-    <core-drawer />
+    <core-drawer/>
 
-    <core-view />
+    <core-view/>
   </v-app>
 </template>
 <script>
-import { mapState } from "vuex";
-export default {
-  
-  computed: {
-    ...mapState(["now"])
-  }
-};
+import { mapState } from 'vuex'
+export default {}
 </script>
 
 <style lang="scss">
-@import "@/styles/index.scss";
+@import '@/styles/index.scss';
 
 /* Remove in 1.2 */
 .v-datatable thead th.column.sortable i {

@@ -1,15 +1,16 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../model/user')
 const {
-    members
+    members,
+    transformUser
 } = require('../resolvers/merge')
 
 const jwt = require('jsonwebtoken');
 
 module.exports = {
-    user: async ({
-        args
-    }) => {
+    user: async (
+        args, req
+    ) => {
 
         try {
             const user = await User.findOne({
@@ -21,7 +22,8 @@ module.exports = {
                 throw new Error('No se encontró este usuario')
             }
 
-            return { ...user._doc,
+            return {
+                ...user._doc,
                 _id: user.id,
                 createdMembers: members.bind(this, user._doc.createdMembers)
             }
@@ -30,7 +32,7 @@ module.exports = {
             throw err
         }
     },
-    users: async () => {
+    users: async (args, req) => {
 
         try {
             const users = await User.find()
@@ -38,7 +40,8 @@ module.exports = {
 
             return users.map(user => {
 
-                return { ...user._doc,
+                return {
+                    ...user._doc,
                     _id: user.id,
                     createdMembers: members.bind(this, user._doc.createdMembers)
                 }
@@ -50,9 +53,9 @@ module.exports = {
     },
 
     createUser: async (args, req) => {
-        if (!req.isAuth) {
-            throw new Error('No Autorizado')
-        }
+        // if (!req.isAuth) {
+        //     throw new Error('No Autorizado')
+        // }
 
         try {
             const existingUser = await User.findOne({
@@ -66,11 +69,13 @@ module.exports = {
             const user = new User({
                 name: args.userInput.name,
                 email: args.userInput.email,
+                role: args.userInput.role,
                 password: hashedPassword
             });
             const result = await user.save();
 
-            return { ...result._doc,
+            return {
+                ...result._doc,
                 password: null,
                 _id: result.id
             }
@@ -79,6 +84,32 @@ module.exports = {
         }
 
     },
+
+    deleteUser: async (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('No Autorizado')
+        }
+        let userToDelete;
+        try {
+
+            const user = await User.findById(args.userId)
+            if (!user) {
+                throw new Error('No se encontro el usuario para borrar')
+            }
+            userToDelete = transformUser(user);
+
+            await User.deleteOne({
+                _id: args.userId
+            })
+            console.log(userToDelete)
+            return userToDelete
+        } catch (err) {
+            throw err
+
+        }
+    },
+
+
     login: async ({
         email,
         password
@@ -102,7 +133,9 @@ module.exports = {
         return {
             userId: user.id,
             token: token,
-            tokenExpiration: 1
+            tokenExpiration: 1,
+            name: user.name,
+            role: user.role
         }
 
     },
@@ -111,6 +144,9 @@ module.exports = {
         if (!req.isAuth) {
             throw new Error('No Autorizado')
         }
+
+
+
 
         const authHeader = req.get('Authorization');
 
@@ -131,11 +167,20 @@ module.exports = {
                 expiresIn: '1h'
             });
 
+            const user = await User.findOne({
+                email: decodedOldToken.email
+            });
+
+
+
 
             return {
                 userId: decodedOldToken.userId,
                 token: newtoken,
-                tokenExpiration: 1
+                tokenExpiration: 1,
+                role: user.role,
+                name: user.name
+
             }
 
         }

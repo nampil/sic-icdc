@@ -39,7 +39,7 @@
     </helper-offset>
 
     <v-card-text>
-      <slot />
+      <slot/>
     </v-card-text>
 
     <v-divider
@@ -48,7 +48,7 @@
     />
 
     <v-card-actions v-if="$slots.actions">
-      <slot name="actions" />
+      <slot name="actions"/>
     </v-card-actions>
   </v-card>
 </template>
@@ -89,13 +89,10 @@ export default {
   },
 
   computed: {
-    hasOffset () {
-      return this.$slots.header ||
-        this.$slots.offset ||
-        this.title ||
-        this.text
+    hasOffset() {
+      return this.$slots.header || this.$slots.offset || this.title || this.text
     },
-    styles () {
+    styles() {
       if (!this.hasOffset) return null
 
       return {
@@ -108,11 +105,12 @@ export default {
 </script>
 
 <style lang="scss">
-  .v-card--material {
-    &__header {
-      &.v-card {
-        border-radius: 4px;
-      }
+@import '../../styles/index.scss';
+.v-card--material {
+  &__header {
+    &.v-card {
+      border-radius: 4px;
     }
   }
+}
 </style>

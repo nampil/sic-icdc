@@ -5,23 +5,13 @@
     grid-list-xl
   >
     <v-layout wrap>
-
       <v-flex
         sm6
         xs12
         md6
         lg3
       >
-        <members-TotalMembers />
-
-      </v-flex>
-      <v-flex
-        sm6
-        xs12
-        md6
-        lg3
-      >
-        <members-TotalFemale />
+        <members-TotalMembers/>
       </v-flex>
       <v-flex
         sm6
@@ -29,7 +19,7 @@
         md6
         lg3
       >
-        <members-TotalMale />
+        <members-TotalFemale/>
       </v-flex>
       <v-flex
         sm6
@@ -37,30 +27,28 @@
         md6
         lg3
       >
-        <members-TotalKids />
-
+        <members-TotalMale/>
       </v-flex>
       <v-flex
-        md12
-        lg6
+        sm6
+        xs12
+        md6
+        lg3
       >
-        <members-MembersTable />
+        <members-TotalKids/>
       </v-flex>
-      <v-flex
-        md12
-        lg6
-      >
-
+      <v-flex md12>
+        <members-MembersTable/>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "Members",
+  name: 'Members',
   data() {
     return {
       tabs: 0,
@@ -69,17 +57,13 @@ export default {
         1: false,
         2: false
       }
-    };
+    }
   },
   methods: {
     complete(index) {
-      this.list[index] = !this.list[index];
+      this.list[index] = !this.list[index]
     }
   },
-  created() {
-    if (this.$store.state.members.length < 1) {
-      this.$store.dispatch("fetchMembers");
-    }
-  }
-};
+  created() {}
+}
 </script>

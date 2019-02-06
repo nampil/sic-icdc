@@ -8,33 +8,91 @@ type Member {
     name: String!
     tel: String
     email: String
-    address: String!
-    bdate: String!
-    relatives: [String!]
+    address: String
+    bdate: String
+    relatives: [String]
     gender: String
     serveIn: [String]
     createdBy: User!
     
 }
 
+
+
 type User {
     _id: ID!
     name: String!
     email: String!
-    password: String
+    password: String!
+    role: Int!
     createdMembers: [Member!]
+    createdEvents: [Event!]
 }
 
 type AuthData{
     userId: ID!
     token: String!
     tokenExpiration: Int!
+    name: String!
+    role: Int!
+}
+
+type Guest{
+    _id: ID!
+    name: String!
+    tel: String
+    email: String
+    bdate: String
+    gender: String
+    invitedBy: String
+    createdBy: User!
+}
+
+type Event {
+    _id: ID!
+    title: String!
+    eventDate: String!
+    endDate: String!
+    place: String!
+    description: String
+    cordinator: String
+    memberAsist: [Member!]
+    guests:[Guest!]
+    staffAuv:[String]
+    staffMav:[String]
+    staffProto:[String]
+    staffDarte:[String]
+    staffEci: [String]
+    staffVar: [String]
+    createdBy: User!
+    active: Boolean!
+    createdAt: String!
+    updatedAt: String!
+}
+
+input EventInput {
+    title: String!
+    eventDate: String!
+    endDate: String!
+    place: String!
+    description: String
+    cordinator: String
+    staffAuv:[String]
+    staffMav:[String]
+    staffProto:[String]
+    staffDarte:[String]
+    staffEci: [String]
+    staffVar: [String]
+}
+input EventAsistInput {
+    memberAsist: [MemberInput!]
 }
 
 input UserInput{
     name: String!
     email: String!
     password: String!
+    role: Int!
 }
 
 input MemberInput {
@@ -43,7 +101,7 @@ input MemberInput {
     email: String
     address: String!
     bdate: String!
-    relatives: [String!]
+    relatives: [String]
     gender: String
     serveIn: [String]
 
@@ -60,27 +118,52 @@ input MemberInputUpdate {
     serveIn: [String]
 
 }
+input EventInputUpdate{
+    title: String
+    eventDate: String
+    endDate: String
+    place: String
+    description: String
+    cordinator: String
+    staffAuv:[String]
+    staffMav:[String]
+    staffProto:[String]
+    staffDarte:[String]
+    staffEci: [String]
+    staffVar: [String]
+}
+
+input GuestInput{
+    name: String!
+    tel: String
+    email: String
+    bdate: String
+    gender: String
+    invitedBy: String
+}
 
 type RootQuery {
-    members(_id: ID,
-        name: String,
-        tel: String,
-        email: String,
-        address: String,
-        bdate: String,
-        relatives: [String!],
-        gender: String,
-        serveIn: [String]): [Member!]!
+    guests: [Guest!]!
+    members:[Member!]!
     users: [User!]!
     user(name: String, userId: String): User!
     login(email: String!, password: String!): AuthData!
     relogin:AuthData!
+    events: [Event!]!
 }
 type RootMutation {
+    createGuest(guestInput: GuestInput): Guest
+    updateGuest(guestId: ID! guestInput: GuestInput): Guest!
+    deleteGuest(guestId: ID!): Guest!
+    createEvent(eventInput: EventInput): Event
+    addMembersAsistToEvent(eventAsistInput: EventAsistInput, eventId: ID!): Event
     createMember(memberInput: MemberInput): Member
     createUser(userInput: UserInput): User
+    deleteUser(userId: ID!): User!
     deleteMember(memberId: ID!): Member!
+    deleteEvent(eventId: ID!): Event!
     updateMember(memberId: ID!, memberInputUpdate: MemberInputUpdate): Member!
+    updateEvent(eventId: ID!, eventInput: EventInput): Event!
 }
 schema {
     query: RootQuery

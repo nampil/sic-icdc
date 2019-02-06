@@ -20,7 +20,7 @@
       </v-toolbar-title>
     </div>
 
-    <v-spacer />
+    <v-spacer/>
     <v-toolbar-items>
       <v-flex
         align-center
@@ -32,20 +32,30 @@
             v-if="isAuthPresent"
             v-ripple
             class="toolbar-items"
-            to="/newmember"
+            to="/members/newmember"
           >
             <v-icon color="tertiary">mdi-account-plus</v-icon>
-
           </router-link>
         </v-fade-transition>
-
-        <router-link
-          v-ripple
-          class="toolbar-items"
-          to="/"
-        >
-          <v-icon color="tertiary">mdi-view-dashboard</v-icon>
-        </router-link>
+        <v-fade-transition mode="out-in">
+          <router-link
+            v-if="isAuthPresent"
+            v-ripple
+            class="toolbar-items"
+            to="/events/newevent"
+          >
+            <v-icon color="tertiary">mdi-calendar-plus</v-icon>
+          </router-link>
+        </v-fade-transition>
+        <v-fade-transition>
+          <router-link
+            v-ripple
+            class="toolbar-items"
+            to="/"
+          >
+            <v-icon color="tertiary">mdi-view-dashboard</v-icon>
+          </router-link>
+        </v-fade-transition>
 
         <v-menu
           v-if="isAuthPresent"
@@ -57,39 +67,31 @@
         >
           <v-btn
             flat
-            icon
             v-ripple
             slot="activator"
             class="toolbar-items"
+            icon
           >
             <v-icon color="tertiary">mdi-account</v-icon>
           </v-btn>
           <v-card>
             <v-list dense>
               <v-list-tile to="/user-profile">
-                <v-list-tile-title>
-
-                  Perfil
-
-                </v-list-tile-title>
+                <v-list-tile-title>Perfil</v-list-tile-title>
               </v-list-tile>
               <v-list-tile @click="logout">
-                <v-list-tile-title>
-                  Salir
-                </v-list-tile-title>
+                <v-list-tile-title>Salir</v-list-tile-title>
               </v-list-tile>
-
             </v-list>
           </v-card>
         </v-menu>
-
       </v-flex>
     </v-toolbar-items>
   </v-toolbar>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations } from 'vuex'
 
 export default {
   data: () => ({
@@ -99,47 +101,47 @@ export default {
   }),
   computed: {
     isAuthPresent() {
-      return this.$store.getters.isAuth;
+      return this.$store.getters.isAuth
     }
   },
 
   watch: {
     $route(val) {
-      this.title = val.name;
+      this.title = val.name
     }
   },
 
   mounted() {
-    this.onResponsiveInverted();
-    window.addEventListener("resize", this.onResponsiveInverted);
+    this.onResponsiveInverted()
+    window.addEventListener('resize', this.onResponsiveInverted)
   },
   beforeDestroy() {
-    window.removeEventListener("resize", this.onResponsiveInverted);
+    window.removeEventListener('resize', this.onResponsiveInverted)
   },
 
   methods: {
-    ...mapMutations("app", ["setDrawer", "toggleDrawer"]),
+    ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
     onClickBtn() {
-      this.setDrawer(!this.$store.state.app.drawer);
+      this.setDrawer(!this.$store.state.app.drawer)
     },
     onClick() {
       //
     },
     onResponsiveInverted() {
       if (window.innerWidth < 991) {
-        this.responsive = true;
-        this.responsiveInput = false;
+        this.responsive = true
+        this.responsiveInput = false
       } else {
-        this.responsive = false;
-        this.responsiveInput = true;
+        this.responsive = false
+        this.responsiveInput = true
       }
     },
     logout() {
-      this.$store.dispatch("logout");
-      this.$router.push("/login");
+      this.$store.dispatch('logout')
+      this.$router.push('/login')
     }
   }
-};
+}
 </script>
 
 <style>

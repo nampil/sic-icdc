@@ -16,9 +16,18 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    role: {
+        type: Number,
+        required: true
+
+    },
     createdMembers: [{
         type: Schema.Types.ObjectId,
         ref: 'Member'
+    }],
+    createdEvents: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Event'
     }]
 });
 

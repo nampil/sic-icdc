@@ -21,9 +21,7 @@
             <v-icon
               color="green"
               small
-            >
-              mdi-arrow-up
-            </v-icon>
+            >mdi-arrow-up</v-icon>
             <span class="green--text">55%</span>&nbsp;
             increase in today's sales
           </p>
@@ -32,9 +30,7 @@
             <v-icon
               class="mr-2"
               small
-            >
-              mdi-clock-outline
-            </v-icon>
+            >mdi-clock-outline</v-icon>
             <span class="caption grey--text font-weight-light">updated 4 minutes ago</span>
           </template>
         </material-chart-card>
@@ -58,9 +54,7 @@
             <v-icon
               class="mr-2"
               small
-            >
-              mdi-clock-outline
-            </v-icon>
+            >mdi-clock-outline</v-icon>
             <span class="caption grey--text font-weight-light">updated 10 minutes ago</span>
           </template>
         </material-chart-card>
@@ -83,9 +77,7 @@
             <v-icon
               class="mr-2"
               small
-            >
-              mdi-clock-outline
-            </v-icon>
+            >mdi-clock-outline</v-icon>
             <span class="caption grey--text font-weight-light">campaign sent 26 minutes ago</span>
           </template>
         </material-chart-card>
@@ -96,8 +88,7 @@
         md6
         lg3
       >
-        <members-TotalMembers />
-
+        <members-TotalMembers/>
       </v-flex>
       <v-flex
         sm6
@@ -105,7 +96,7 @@
         md6
         lg3
       >
-        <members-TotalFemale />
+        <members-TotalFemale/>
       </v-flex>
       <v-flex
         sm6
@@ -113,7 +104,7 @@
         md6
         lg3
       >
-        <members-TotalMale />
+        <members-TotalMale/>
       </v-flex>
       <v-flex
         sm6
@@ -121,8 +112,7 @@
         md6
         lg3
       >
-        <members-TotalKids />
-
+        <members-TotalKids/>
       </v-flex>
       <v-flex
         md12
@@ -179,16 +169,13 @@
                 style="align-self: center"
               >Tasks:</span>
               <v-tab class="mr-3">
-                <v-icon class="mr-2">mdi-bug</v-icon>
-                Bugs
+                <v-icon class="mr-2">mdi-bug</v-icon>Bugs
               </v-tab>
               <v-tab class="mr-3">
-                <v-icon class="mr-2">mdi-code-tags</v-icon>
-                Website
+                <v-icon class="mr-2">mdi-code-tags</v-icon>Website
               </v-tab>
               <v-tab>
-                <v-icon class="mr-2">mdi-cloud</v-icon>
-                Server
+                <v-icon class="mr-2">mdi-cloud</v-icon>Server
               </v-tab>
             </v-tabs>
           </v-flex>
@@ -206,9 +193,7 @@
                       color="green"
                     />
                   </v-list-tile-action>
-                  <v-list-tile-title>
-                    Sign contract for "What are conference organized afraid of?"
-                  </v-list-tile-title>
+                  <v-list-tile-title>Sign contract for "What are conference organized afraid of?"</v-list-tile-title>
                   <div class="d-flex">
                     <v-tooltip
                       top
@@ -238,10 +223,9 @@
                       </v-btn>
                       <span>Close</span>
                     </v-tooltip>
-
                   </div>
                 </v-list-tile>
-                <v-divider />
+                <v-divider/>
                 <v-list-tile @click="complete(1)">
                   <v-list-tile-action>
                     <v-checkbox
@@ -249,9 +233,7 @@
                       color="success"
                     />
                   </v-list-tile-action>
-                  <v-list-tile-title>
-                    Lines From Great Russian Literature? Or E-mails From My Boss?
-                  </v-list-tile-title>
+                  <v-list-tile-title>Lines From Great Russian Literature? Or E-mails From My Boss?</v-list-tile-title>
                   <div class="d-flex">
                     <v-tooltip
                       top
@@ -284,7 +266,7 @@
                     </v-tooltip>
                   </div>
                 </v-list-tile>
-                <v-divider />
+                <v-divider/>
                 <v-list-tile @click="complete(2)">
                   <v-list-tile-action>
                     <v-checkbox
@@ -292,9 +274,7 @@
                       color="success"
                     />
                   </v-list-tile-action>
-                  <v-list-tile-title>
-                    Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
-                  </v-list-tile-title>
+                  <v-list-tile-title>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit</v-list-tile-title>
                   <div class="d-flex">
                     <v-tooltip
                       top
@@ -324,7 +304,6 @@
                       </v-btn>
                       <span>Close</span>
                     </v-tooltip>
-
                   </div>
                 </v-list-tile>
               </v-list>
@@ -342,7 +321,7 @@ export default {
     return {
       dailySalesChart: {
         data: {
-          labels: ["M", "T", "W", "T", "F", "S", "S"],
+          labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
           series: [[12, 17, 7, 17, 23, 18, 38]]
         },
         options: {
@@ -361,7 +340,7 @@ export default {
       },
       dataCompletedTasksChart: {
         data: {
-          labels: ["12am", "3pm", "6pm", "9pm", "12pm", "3am", "6am", "9am"],
+          labels: ['12am', '3pm', '6pm', '9pm', '12pm', '3am', '6am', '9am'],
           series: [[230, 750, 450, 300, 280, 240, 200, 190]]
         },
         options: {
@@ -381,18 +360,18 @@ export default {
       emailsSubscriptionChart: {
         data: {
           labels: [
-            "Ja",
-            "Fe",
-            "Ma",
-            "Ap",
-            "Mai",
-            "Ju",
-            "Jul",
-            "Au",
-            "Se",
-            "Oc",
-            "No",
-            "De"
+            'Ja',
+            'Fe',
+            'Ma',
+            'Ap',
+            'Mai',
+            'Ju',
+            'Jul',
+            'Au',
+            'Se',
+            'Oc',
+            'No',
+            'De'
           ],
           series: [[542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]]
         },
@@ -411,12 +390,12 @@ export default {
         },
         responsiveOptions: [
           [
-            "screen and (max-width: 640px)",
+            'screen and (max-width: 640px)',
             {
               seriesBarDistance: 5,
               axisX: {
                 labelInterpolationFnc: function(value) {
-                  return value[0];
+                  return value[0]
                 }
               }
             }
@@ -426,63 +405,63 @@ export default {
       headers: [
         {
           sortable: false,
-          text: "ID",
-          value: "id"
+          text: 'ID',
+          value: 'id'
         },
         {
           sortable: false,
-          text: "Name",
-          value: "name"
+          text: 'Name',
+          value: 'name'
         },
         {
           sortable: false,
-          text: "Salary",
-          value: "salary",
-          align: "right"
+          text: 'Salary',
+          value: 'salary',
+          align: 'right'
         },
         {
           sortable: false,
-          text: "Country",
-          value: "country",
-          align: "right"
+          text: 'Country',
+          value: 'country',
+          align: 'right'
         },
         {
           sortable: false,
-          text: "City",
-          value: "city",
-          align: "right"
+          text: 'City',
+          value: 'city',
+          align: 'right'
         }
       ],
       items: [
         {
-          name: "Dakota Rice",
-          country: "Niger",
-          city: "Oud-Tunrhout",
-          salary: "$35,738"
+          name: 'Dakota Rice',
+          country: 'Niger',
+          city: 'Oud-Tunrhout',
+          salary: '$35,738'
         },
         {
-          name: "Minerva Hooper",
-          country: "Curaçao",
-          city: "Sinaai-Waas",
-          salary: "$23,738"
+          name: 'Minerva Hooper',
+          country: 'Curaçao',
+          city: 'Sinaai-Waas',
+          salary: '$23,738'
         },
         {
-          name: "Sage Rodriguez",
-          country: "Netherlands",
-          city: "Overland Park",
-          salary: "$56,142"
+          name: 'Sage Rodriguez',
+          country: 'Netherlands',
+          city: 'Overland Park',
+          salary: '$56,142'
         },
         {
-          name: "Philip Chanley",
-          country: "Korea, South",
-          city: "Gloucester",
-          salary: "$38,735"
+          name: 'Philip Chanley',
+          country: 'Korea, South',
+          city: 'Gloucester',
+          salary: '$38,735'
         },
         {
-          name: "Doris Greene",
-          country: "Malawi",
-          city: "Feldkirchen in Kārnten",
-          salary: "$63,542"
+          name: 'Doris Greene',
+          country: 'Malawi',
+          city: 'Feldkirchen in Kārnten',
+          salary: '$63,542'
         }
       ],
       tabs: 0,
@@ -491,17 +470,44 @@ export default {
         1: false,
         2: false
       }
-    };
+    }
   },
   methods: {
     complete(index) {
-      this.list[index] = !this.list[index];
+      this.list[index] = !this.list[index]
     }
   },
-  created() {
-    if (this.$store.state.members.length < 1) {
-      this.$store.dispatch("fetchMembers");
+  async created() {
+    this.$store.commit('loading', true)
+
+    const vue = this
+    const loadData = await function() {
+      if (vue.$store.state.auth.token) {
+        vue.$store
+          .dispatch('fetchEvents')
+          .then(res => {
+            console.log('events fetched')
+          })
+          .catch(err => console.log(err))
+        vue.$store
+          .dispatch('fetchMembers')
+          .then(res => {
+            console.log('members fetched')
+          })
+          .catch(err => {
+            console.log(err)
+          })
+        vue.$store
+          .dispatch('fetchGuests')
+          .then(res => {
+            console.log('guests fetched')
+          })
+          .catch(err => console.log(err))
+      }
+    }
+    if (loadData) {
+      vue.$store.commit('loading', false)
     }
   }
-};
+}
 </script>

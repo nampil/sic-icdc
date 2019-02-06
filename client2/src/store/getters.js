@@ -3,8 +3,24 @@
 export default {
 
   //
+  getUserRole: state => {
+    return state.auth.role
+  },
+
   isAuth: state => {
     return state.auth.token !== null
+  },
+
+  getAllGuests: state => {
+    return state.guests
+  },
+
+  getAllMembers: state => {
+    return state.members
+  },
+
+  getAllUsers: state => {
+    return state.users
   },
 
   getMembers: state => {
@@ -48,7 +64,7 @@ export default {
     }
   },
   getMemberById: (state) => (id) => {
-    if (state.members) {
+    if (state.members.length > 0) {
       const member = state.members.find(member => member._id === id)
 
       function pad(n) {
@@ -66,6 +82,47 @@ export default {
       return null
     }
   },
+  getEventById: (state) => (id) => {
+    if (state.events.length > 0) {
+      const event = state.events.find(event => event._id === id)
+
+      function pad(n) {
+        return n < 10 ? "0" + n : n;
+      }
+      return {
+        ...event,
+        eventDate: new Date(event.eventDate).toLocaleString(['es-VE'], {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          })
+          .split('/')
+          .reverse()
+          .join('-'),
+        eventTime: new Date(event.eventDate).toLocaleString('es-VE', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        endDate: new Date(event.endDate).toLocaleString(['es-VE'], {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          })
+          .split('/')
+          .reverse()
+          .join('-'),
+        eventTimeC: new Date(event.endDate).toLocaleString('es-VE', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+
+      }
+    } else {
+      return null
+    }
+  },
   getIsloading: state => {
     return state.isLoading
   },
@@ -74,5 +131,9 @@ export default {
   },
   getLoginAlert: state => {
     return state.loginAlert
+  },
+
+  getEvents: state => {
+    return state.events
   }
 }

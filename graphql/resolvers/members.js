@@ -2,7 +2,7 @@ const Member = require('../../model/member');
 const User = require('../../model/user');
 
 const {
-    transforMember
+    transformMember
 } = require('./merge')
 
 
@@ -18,7 +18,7 @@ module.exports = {
 
             return members.map(member => {
 
-                return transforMember(member);
+                return transformMember(member);
 
             })
         } catch (err) {
@@ -29,7 +29,7 @@ module.exports = {
         if (!req.isAuth) {
             throw new Error('No Autorizado')
         }
-        console.log(req.userId)
+        console.log(args.memberInput.tel)
         const member = new Member({
             name: args.memberInput.name,
             tel: args.memberInput.tel,
@@ -43,10 +43,9 @@ module.exports = {
         });
         let createdMembers;
         try {
-            const result = await member
-                .save()
+            const result = await member.save()
 
-            createdMembers = transforMember(result);
+            createdMembers = transformMember(result);
             const creator = await User.findById(req.userId);
 
             if (!creator) {
@@ -73,7 +72,7 @@ module.exports = {
             if (!member) {
                 throw new Error('No se encontro el miembro para borrar')
             }
-            memberToDelete = transforMember(member);
+            memberToDelete = transformMember(member);
 
             await Member.deleteOne({
                 _id: args.memberId

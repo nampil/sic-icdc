@@ -1,44 +1,32 @@
 const mongoose = require('mongoose');
 
-
 const Schema = mongoose.Schema;
 
-const memberSchema = new Schema({
+const guestSchema = new Schema({
     name: {
         type: String,
         required: true
     },
-    address: {
-        type: String,
-
-
-    },
     tel: {
-        type: String,
-        default: ''
+        type: String
     },
     email: {
-        type: String,
+        type: String
     },
     bdate: {
         type: Date,
-
+        default: null
     },
     gender: {
-        type: String,
-
+        type: String
     },
-    relatives: [{
+    invitedBy: {
         type: String
-    }],
-    serveIn: [{
-        type: String
-    }],
+    },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     }
-
 });
 
-module.exports = mongoose.model('Member', memberSchema);
+module.exports = mongoose.model('Guest', guestSchema);

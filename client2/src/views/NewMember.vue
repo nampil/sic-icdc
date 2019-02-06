@@ -10,9 +10,7 @@
         title="Nuevo Miembro"
         text="Registre los datos para el nuevo miembro"
       >
-
-        <v-form>
-
+        <v-form ref="newMemberForm">
           <v-container
             py-0
             class="relative"
@@ -39,9 +37,7 @@
                     indeterminate
                   ></v-progress-circular>
                 </v-flex>
-
               </v-layout>
-
             </div>
 
             <v-layout wrap>
@@ -50,44 +46,10 @@
                   class="purple-input"
                   label="Nombre"
                   v-model="member.name"
-                  required
+                  :rules="nameRules"
+                  prepend-inner-icon="mdi-account-outline"
                 />
               </v-flex>
-
-              <v-flex
-                xs12
-                md6
-              >
-                <v-text-field
-                  label="Teléfono"
-                  class="purple-input"
-                  v-model="member.tel"
-                />
-              </v-flex>
-              <v-flex
-                xs12
-                md6
-              >
-                <v-text-field
-                  label="Email"
-                  class="purple-input"
-                  type="email"
-                  v-model="member.email"
-                />
-
-              </v-flex>
-
-              <v-flex
-                xs12
-                md12
-              >
-                <v-text-field
-                  label="Dirección"
-                  class="purple-input"
-                  v-model="member.address"
-                />
-              </v-flex>
-
               <v-flex
                 xs12
                 md6
@@ -110,14 +72,13 @@
                     v-model="computedDateFormatted"
                     label="Fecha de Nacimiento"
                     readonly
+                    :rules="bdateRules"
                     prepend-icon="mdi-calendar-star"
-                  >
-
-                  </v-text-field>
+                  ></v-text-field>
 
                   <v-date-picker
+                    class="datePicker"
                     locale="ES-ve"
-                    dark
                     ref="picker"
                     :max="new Date().toISOString().substr(0, 10)"
                     min="1950-01-01"
@@ -135,32 +96,73 @@
                       @click="$refs.menu1.save(member.bdate)"
                     >OK</v-btn>
                   </v-date-picker>
-
                 </v-menu>
-
               </v-flex>
 
               <v-flex
                 xs12
-                md2
+                md3
               >
                 <v-text-field
                   label="Edad"
                   class="purple-input"
                   :value="memAge"
                   readonly
+                  prepend-inner-icon="mdi-counter"
                 />
-
               </v-flex>
               <v-flex
                 xs12
-                md4
+                md3
               >
                 <v-select
                   class="purple-input"
                   label="Genero"
                   v-model="member.gender"
                   :items="gender"
+                  :rules="genderRules"
+                  prepend-inner-icon="mdi-gender-male-female"
+                />
+              </v-flex>
+
+              <v-flex
+                xs12
+                md6
+              >
+                <v-text-field
+                  label="Teléfono"
+                  class="purple-input"
+                  v-model="member.tel"
+                  mask="(####) ###-####"
+                  validate-on-blur
+                  :rules="telRules"
+                  prepend-inner-icon="mdi-cellphone-iphone"
+                />
+              </v-flex>
+              <v-flex
+                xs12
+                md6
+              >
+                <v-text-field
+                  label="Email"
+                  class="purple-input"
+                  type="email"
+                  v-model="member.email"
+                  :rules="emailRules"
+                  validate-on-blur
+                  prepend-inner-icon="mdi-email"
+                />
+              </v-flex>
+
+              <v-flex
+                xs12
+                md12
+              >
+                <v-text-field
+                  label="Dirección"
+                  class="purple-input"
+                  v-model="member.address"
+                  prepend-inner-icon="mdi-home-map-marker"
                 />
               </v-flex>
 
@@ -174,6 +176,7 @@
                   label="Familiares y amigos en la ICDC"
                   multiple
                   small-chips
+                  prepend-inner-icon="mdi-human-handsdown"
                 ></v-combobox>
               </v-flex>
               <v-flex
@@ -186,6 +189,7 @@
                   label="Áreas de Servicio"
                   multiple
                   small-chips
+                  prepend-inner-icon="mdi-room-service"
                 ></v-combobox>
               </v-flex>
 
@@ -195,167 +199,200 @@
               >
                 <v-btn
                   class="mx-4 font-weight-light"
-                  color="error"
+                  color="tertiary"
                   @click="resetForm"
-                >
-                  Borrar
-                </v-btn>
+                >Borrar</v-btn>
 
                 <v-btn
                   class="mx-0 font-weight-light"
                   color="success"
                   @click="createMember"
-                >
-                  Enviar
-                </v-btn>
+                >Enviar</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
         </v-form>
-
       </material-card>
     </v-flex>
-
   </v-layout>
-
 </template>
 <script>
-import axios from "axios";
-import { mapGetters } from "vuex";
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
-  name: "NewMember",
+  name: 'NewMember',
 
   data() {
     return {
-      gender: ["f", "m"],
+      bdateRules: [v => !!v || 'Se requiere nombre'],
+      nameRules: [v => !!v || 'Se requiere nombre'],
+      genderRules: [v => !!v || 'Se requiere genero'],
+      emailRules: [],
+      telRules: [],
+      gender: ['f', 'm'],
       //date: new Date().toISOString().substr(0, 10),
       member: {},
       dateFormatted: null,
       menu1: false,
       areasServicio: [
-        "AUV",
-        "MAV",
-        "OeI",
-        "ECI",
-        "Recupera",
-        "Amor y Respeto",
-        "MqT",
-        "ZdC",
-        "Discipularte",
-        "Admin",
-        "Protocolo",
-        "CAFE"
+        'AUV',
+        'MAV',
+        'OeI',
+        'ECI',
+        'Recupera',
+        'Amor y Respeto',
+        'MqT',
+        'ZdC',
+        'Discipularte',
+        'Admin',
+        'Protocolo',
+        'CAFE'
       ]
-    };
+    }
   },
-  computed: {
-    isloading: {
-      get: function() {
-        return this.$store.getters.getIsloading;
+  watch: {
+    member: {
+      handler: function(newval, oldval) {
+        if (!this.isEmpty(newval)) {
+          return this.setLocalStoreMemberData(this.member)
+        }
       },
-      set: function(payload) {
-        this.$store.dispatch("setLoading", payload);
+      deep: true
+    },
+    menu1(val) {
+      val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+    },
+    tel(val) {
+      if (val && val !== '') {
+        this.telRules = [
+          v =>
+            /^0[0-9]{10}$/g.test(v) || 'Teléfono invalido. Ejemplo 0412-1234567'
+        ]
+      } else {
+        this.telRules = []
       }
     },
-    computedDateFormatted() {
-      return this.formatDate(this.member.bdate);
+    email(val) {
+      if (val && val !== '') {
+        this.emailRules = [v => /.+@.+/.test(v) || 'E-mail debe ser valido']
+      } else {
+        this.emailRules = []
+      }
+    }
+  },
+  computed: {
+    tel() {
+      if (this.member.tel && this.member.tel !== '') {
+        return this.member.tel
+      }
+    },
+    email() {
+      if (this.member.mail && this.member.email !== '') return this.member.email
+    },
+    isloading: {
+      get: function() {
+        return this.$store.getters.getIsloading
+      },
+      set: function(payload) {
+        this.$store.dispatch('setLoading', payload)
+      }
+    },
+    computedDateFormatted: {
+      get: function() {
+        return this.formatDate(this.member.bdate)
+      },
+      set: function(val) {
+        return (this.member.bdate = val)
+      }
     },
     memAge() {
       if (this.member.bdate) {
         const memberAge =
-          Math.abs(Date.now() - new Date(this.member.bdate)) / 31557600000;
-        return Math.floor(memberAge);
+          Math.abs(Date.now() - new Date(this.member.bdate)) / 31557600000
+        return Math.floor(memberAge)
       }
     }
   },
-  watch: {
-    menu1(val) {
-      val && this.$nextTick(() => (this.$refs.picker.activePicker = "YEAR"));
-    }
-  },
+
   methods: {
+    isEmpty(obj) {
+      for (var key in obj) {
+        if (obj.hasOwnProperty(key)) return false
+      }
+      return true
+    },
+    setLocalStoreMemberData(memberData) {
+      localStorage.setItem('newMemberFormData', JSON.stringify(memberData))
+    },
     resetForm() {
-      this.member = {};
+      this.$refs.newMemberForm.resetValidation()
+      this.member = {}
+      window.localStorage.removeItem('newMemberFormData')
     },
     resetBdate() {
-      this.menu1 = false;
-      this.member.bdate = this.$store.getters.getMemberById(
-        this.$route.params.id
-      ).bdate;
+      this.menu1 = false
+      if (this.member.bdate) {
+        this.member.bdate = this.$store.getters.getMemberById(
+          this.$route.params.id
+        ).bdate
+      }
     },
     formatDate(date) {
-      if (!date) return null;
+      if (!date) return null
 
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
+      const [year, month, day] = date.split('-')
+      return `${day}/${month}/${year}`
     },
     parseDate(date) {
-      if (!date) return null;
+      if (!date) return null
 
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
-    createMember() {
-      this.isloading = true;
+    async createMember() {
+      const validation = await this.$refs.newMemberForm.validate()
 
-      const query = {
-        query: `
-            mutation {
-          createMember (
-            memberInput:{
-              name: "${this.member.name}",
-              tel: "${this.member.tel}",
-              address:"${this.member.address}",
-              bdate:"${this.member.bdate}",
-              gender: "${this.member.gender}",
-              email: "${this.member.email}",
-              relatives: ${JSON.stringify(this.member.relatives)},
-              serveIn: ${JSON.stringify(this.member.serveIn)}
+      if (validation) {
+        this.isloading = true
+        const member = {
+          ...this.member,
+          relatives: this.member.relatives ? this.member.relatives : [],
+          serveIn: this.member.serveIn ? this.member.serveIn : []
+        }
+        console.log
+
+        this.$store
+          .dispatch('createMember', member)
+          .then(res => {
+            if (res.status === 200) {
+              this.$store.dispatch('toggleAlert', {
+                class: 'success',
+                active: true,
+                msg: 'Exito! Miembro creado satisfactoriamente'
               })
-            {
-              name
+            } else {
+              this.$store.dispatch('toggleAlert', {
+                class: 'warning darken-2',
+                active: true,
+                msg: 'Algo no anda bien aqui :('
+              })
             }
-}`
-      };
-
-      axios
-        .post("/api/", query, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.$store.state.auth.token
-          }
-        })
-        .then(async res => {
-          await this.$store.dispatch("fetchMembers");
-
-          return res;
-        })
-        .then(res => {
-          if (res.status === 200) {
-            this.$store.dispatch("toggleAlert", {
-              class: "success",
-              active: true,
-              msg: "Exito! Miembro creado satisfactoriamente"
-            });
-          } else {
-            this.$store.dispatch("toggleAlert", {
-              class: "warning darken-2",
-              active: true,
-              msg: "Algo no anda bien aqui :("
-            });
-          }
-          this.isloading = false;
-          this.resetForm();
-        })
-        .catch(err => console.log(err));
+            this.isloading = false
+            this.resetForm()
+          })
+          .catch(err => console.log(err))
+      } else {
+      }
     }
   },
-  created() {
-    if (this.$store.state.members.length < 1) {
-      this.$store.dispatch("relogin");
+  mounted() {
+    const newMemberFormData = localStorage.getItem('newMemberFormData')
+    if (newMemberFormData) {
+      this.member = JSON.parse(newMemberFormData)
     }
-  }
-};
+  },
+  created() {}
+}
 </script>
 <style lang="scss" scoped>
 .loading {
@@ -372,5 +409,14 @@ export default {
 }
 .relative {
   position: relative;
+}
+
+.datePicker button.v-btn.v-btn--flat.v-btn--floating.theme--light {
+  padding: 0;
+  border-radius: 50%;
+  color: rgba(0, 0, 0, 0.87) !important;
+  &:hover {
+    background-color: rgba(76, 175, 79, 0.2);
+  }
 }
 </style>

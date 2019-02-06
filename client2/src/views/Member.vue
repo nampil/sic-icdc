@@ -8,12 +8,31 @@
       <material-card
         v-if="member"
         color="primary"
-        :title="member.name"
-        :text="'Tel: ' + member.tel"
       >
+        <v-layout
+          align-center
+          justify-space-between
+          row
+          fill-height
+          slot="header"
+        >
+          <div>
+            <div class="title">{{member.name}}</div>
+            <div class="font-weight-light mb-2">Tel: {{member.tel}}</div>
+          </div>
 
+          <v-btn
+            v-if="!edit"
+            @click="edit = !edit"
+            color="info"
+          >Editar</v-btn>
+          <v-btn
+            v-else
+            @click="(edit = !edit), resetForm()"
+            color="tertiary"
+          >Cancelar</v-btn>
+        </v-layout>
         <v-form>
-
           <v-container
             py-0
             class="relative"
@@ -40,9 +59,7 @@
                     indeterminate
                   ></v-progress-circular>
                 </v-flex>
-
               </v-layout>
-
             </div>
 
             <v-layout wrap>
@@ -51,44 +68,11 @@
                   class="purple-input"
                   label="Nombre"
                   v-model="member.name"
-                  required
+                  :rules="rulesName"
+                  prepend-inner-icon="mdi-account-outline"
+                  :readonly="!edit"
                 />
               </v-flex>
-
-              <v-flex
-                xs12
-                md6
-              >
-                <v-text-field
-                  label="Teléfono"
-                  class="purple-input"
-                  v-model="member.tel"
-                />
-              </v-flex>
-              <v-flex
-                xs12
-                md6
-              >
-                <v-text-field
-                  label="Email"
-                  class="purple-input"
-                  type="email"
-                  v-model="member.email"
-                />
-
-              </v-flex>
-
-              <v-flex
-                xs12
-                md12
-              >
-                <v-text-field
-                  label="Dirección"
-                  class="purple-input"
-                  v-model="member.address"
-                />
-              </v-flex>
-
               <v-flex
                 xs12
                 md6
@@ -107,18 +91,17 @@
                   min-width="290px"
                 >
                   <v-text-field
-                    slot="activator"
                     v-model="computedDateFormatted"
+                    slot="activator"
                     label="Fecha de Nacimiento"
                     readonly
                     prepend-icon="mdi-calendar-star"
-                  >
-
-                  </v-text-field>
+                  ></v-text-field>
 
                   <v-date-picker
+                    v-show="edit"
+                    class="datePicker"
                     locale="ES-ve"
-                    dark
                     ref="picker"
                     :max="new Date().toISOString().substr(0, 10)"
                     min="1950-01-01"
@@ -136,9 +119,7 @@
                       @click="$refs.menu1.save(member.bdate)"
                     >OK</v-btn>
                   </v-date-picker>
-
                 </v-menu>
-
               </v-flex>
 
               <v-flex
@@ -150,8 +131,8 @@
                   class="purple-input"
                   :value="memAge"
                   readonly
+                  prepend-inner-icon="mdi-counter"
                 />
-
               </v-flex>
               <v-flex
                 xs12
@@ -162,6 +143,48 @@
                   label="Genero"
                   v-model="member.gender"
                   :items="gender"
+                  prepend-inner-icon="mdi-gender-male-female"
+                  :readonly="!edit"
+                />
+              </v-flex>
+
+              <v-flex
+                xs12
+                md6
+              >
+                <v-text-field
+                  label="Teléfono"
+                  class="purple-input"
+                  v-model="member.tel"
+                  mask="(####) ###-####"
+                  prepend-inner-icon="mdi-cellphone-iphone"
+                  :readonly="!edit"
+                />
+              </v-flex>
+              <v-flex
+                xs12
+                md6
+              >
+                <v-text-field
+                  label="Email"
+                  class="purple-input"
+                  type="email"
+                  v-model="member.email"
+                  prepend-inner-icon="mdi-email"
+                  :readonly="!edit"
+                />
+              </v-flex>
+
+              <v-flex
+                xs12
+                md12
+              >
+                <v-text-field
+                  label="Dirección"
+                  class="purple-input"
+                  v-model="member.address"
+                  prepend-inner-icon="mdi-home-map-marker"
+                  :readonly="!edit"
                 />
               </v-flex>
 
@@ -170,11 +193,13 @@
                 md6
               >
                 <v-combobox
+                  :readonly="!edit"
                   v-model="member.relatives"
                   :items="member.relatives"
                   label="Familiares y amigos en la ICDC"
                   multiple
                   small-chips
+                  prepend-inner-icon="mdi-human-handsdown"
                 ></v-combobox>
               </v-flex>
               <v-flex
@@ -182,122 +207,165 @@
                 md6
               >
                 <v-combobox
+                  :readonly="!edit"
                   v-model="member.serveIn"
                   :items="areasServicio"
                   label="Áreas de Servicio"
                   multiple
                   small-chips
+                  prepend-inner-icon="mdi-room-service"
                 ></v-combobox>
               </v-flex>
-
               <v-flex
                 xs12
                 text-xs-right
               >
-                <v-btn
-                  class="mx-4 font-weight-light"
-                  color="error"
-                  @click="resetForm"
-                >
-                  Cancelar
-                </v-btn>
+                <v-expand-transition>
+                  <div v-show="edit">
+                    <v-btn
+                      class="mx-4 font-weight-light"
+                      color="tertiary"
+                      @click="resetForm"
+                    >Cancelar</v-btn>
 
-                <v-btn
-                  class="mx-0 font-weight-light"
-                  color="success"
-                  @click="updateMember"
-                >
-                  Actualizar
-                </v-btn>
+                    <v-btn
+                      class="mx-0 font-weight-light"
+                      color="success"
+                      @click="updateMember"
+                    >Actualizar</v-btn>
+                  </div>
+                </v-expand-transition>
               </v-flex>
             </v-layout>
           </v-container>
         </v-form>
-
       </material-card>
     </v-flex>
-
   </v-layout>
-
 </template>
 <script>
-import axios from "axios";
-import { mapGetters } from "vuex";
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
-  name: "Member",
+  name: 'Member',
 
   data() {
     return {
-      gender: ["f", "m"],
-      //date: new Date().toISOString().substr(0, 10),
+      edit: false,
+      rulesName: [v => !!v || 'Se requiere nombre'],
+      emailRules: [],
+      telRules: [],
+      gender: ['f', 'm'],
       member: this.$store.getters.getMemberById(this.$route.params.id),
+      //date: new Date().toISOString().substr(0, 10),
       dateFormatted: null,
       menu1: false,
       areasServicio: [
-        "AUV",
-        "MAV",
-        "OeI",
-        "ECI",
-        "Recupera",
-        "Amor y Respeto",
-        "MqT",
-        "ZdC",
-        "Discipularte",
-        "Admin",
-        "Protocolo",
-        "CAFE"
+        'AUV',
+        'MAV',
+        'OeI',
+        'ECI',
+        'Recupera',
+        'Amor y Respeto',
+        'MqT',
+        'ZdC',
+        'Discipularte',
+        'Admin',
+        'Protocolo',
+        'CAFE'
       ]
-    };
+    }
   },
   computed: {
+    stateMember: function() {
+      return this.$store.getters.getMemberById(this.$route.params.id)
+    },
+    tel: function() {
+      if (this.member && this.member.tel !== 'undefined') {
+        return this.member.tel
+      } else {
+        return ''
+      }
+    },
+    email() {
+      if (this.member) {
+        return this.member.email
+      } else {
+        return 'Loading...'
+      }
+    },
     isloading: {
       get: function() {
-        return this.$store.getters.getIsloading;
+        return this.$store.getters.getIsloading
       },
       set: function(payload) {
-        this.$store.dispatch("setLoading", payload);
+        this.$store.dispatch('setLoading', payload)
       }
     },
     computedDateFormatted() {
-      return this.formatDate(this.member.bdate);
+      return this.formatDate(this.member.bdate)
     },
     memAge() {
       const memberAge =
-        Math.abs(Date.now() - new Date(this.member.bdate)) / 31557600000;
-      return Math.floor(memberAge);
+        Math.abs(Date.now() - new Date(this.member.bdate)) / 31557600000
+      return Math.floor(memberAge)
     }
   },
   watch: {
+    stateMember: function() {
+      this.member = this.stateMember
+    },
     menu1(val) {
-      val && this.$nextTick(() => (this.$refs.picker.activePicker = "YEAR"));
+      val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+    },
+    tel: function(val) {
+      if (val && val !== '') {
+        this.telRules = [
+          v =>
+            /^0[0-9]{10}$/g.test(v) || 'Teléfono invalido. Ejemplo 0412-1234567'
+        ]
+      } else {
+        this.telRules = []
+      }
+    },
+    email(val) {
+      if (val && val !== '') {
+        this.emailRules = [
+          v =>
+            /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g.test(
+              v
+            ) || 'E-mail debe ser valido'
+        ]
+      } else {
+        this.emailRules = []
+      }
     }
   },
   methods: {
     resetForm() {
-      this.member = this.$store.getters.getMemberById(this.$route.params.id);
-      console.log("reseteado");
+      this.member = this.$store.getters.getMemberById(this.$route.params.id)
     },
     resetBdate() {
-      this.menu1 = false;
+      this.menu1 = false
       this.member.bdate = this.$store.getters.getMemberById(
         this.$route.params.id
-      ).bdate;
+      ).bdate
     },
     formatDate(date) {
-      if (!date) return null;
+      if (!date) return null
 
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
+      const [year, month, day] = date.split('-')
+      return `${day}/${month}/${year}`
     },
     parseDate(date) {
-      if (!date) return null;
+      if (!date) return null
 
-      const [month, day, year] = date.split("/");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      const [month, day, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
     updateMember() {
-      this.isloading = true;
-      console.log(JSON.stringify(this.member.relatives));
+      this.isloading = true
+      console.log(JSON.stringify(this.member.relatives))
       const query = {
         query: `
             mutation {
@@ -317,39 +385,35 @@ export default {
               name
             }
 }`
-      };
+      }
 
       axios
-        .post("/api/", query, {
+        .post('/api/', query, {
           headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + this.$store.state.auth.token
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.$store.state.auth.token
           }
         })
         .then(async res => {
-          await this.$store.dispatch("fetchMembers");
+          await this.$store.dispatch('fetchMembers')
 
-          return res;
+          return res
         })
         .then(res => {
-          this.isloading = false;
-          if (res.status === 200 && res.statusText === "OK") {
-            this.$store.dispatch("toggleAlert", {
-              class: "purple",
+          this.isloading = false
+          if (res.status === 200 && res.statusText === 'OK') {
+            this.$store.dispatch('toggleAlert', {
+              class: 'purple',
               active: true,
               msg: `Informacion de ${this.member.name} actualizada.`
-            });
+            })
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
     }
   },
-  mounted() {
-    if (this.$store.state.members.length < 1) {
-      this.$store.dispatch("fetchMembers");
-    }
-  }
-};
+  created() {}
+}
 </script>
 <style lang="scss" scoped>
 .loading {

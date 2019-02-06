@@ -19,20 +19,34 @@ import i18n from '@/i18n'
 import router from '@/router'
 import store from '@/store'
 
+//Other imports
+
+import VCalendar from 'v-calendar'
+import 'v-calendar/lib/v-calendar.min.css'
 // Sync store with router
 sync(store, router)
 
 Vue.config.productionTip = false
+
+Vue.use(VCalendar, {
+  firstDayOfWeek: 1, // Sunday
+  componentPrefix: "n"
+});
 
 /* eslint-disable no-new */
 new Vue({
   i18n,
   router,
   store,
-  render: h => h(App),
   mounted() {
     if (this.$store.state.auth.token) {
-      this.$store.dispatch('startTime')
+      this.$store.dispatch('relogin')
     }
   },
+  render: h => h(App),
+  created() {
+
+
+  }
+
 }).$mount('#app')

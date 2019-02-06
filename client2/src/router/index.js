@@ -11,7 +11,7 @@ import Vue from 'vue'
 import VueAnalytics from 'vue-analytics'
 import Router from 'vue-router'
 import Meta from 'vue-meta'
-
+import store from '../store/'
 // Routes
 import paths from './paths'
 
@@ -20,9 +20,9 @@ function route(path, view, name, meta) {
     name: name || view,
     meta,
     path,
-    component: (resovle) => import(
+    component: (resolve) => import(
       `@/views/${view}.vue`
-    ).then(resovle)
+    ).then(resolve)
   }
 }
 
@@ -67,7 +67,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
-
 
 })
 

@@ -26,11 +26,9 @@
               contain
             />
           </v-list-tile-avatar>
-          <v-list-tile-title class="title">
-            SIC - ICDC
-          </v-list-tile-title>
+          <v-list-tile-title class="title">SIC - ICDC</v-list-tile-title>
         </v-list-tile>
-        <v-divider />
+        <v-divider/>
         <v-list-tile v-if="responsive">
           <v-text-field
             class="purple-input search-input"
@@ -49,9 +47,20 @@
           <v-list-tile-action>
             <v-icon>{{ link.icon }}</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title v-text="link.text" />
+          <v-list-tile-title v-text="link.text"/>
         </v-list-tile>
-
+        <v-list-tile
+          v-if="getUserRole > 4"
+          to="/users"
+          :active-class="color"
+          avatar
+          class="v-list-item"
+        >
+          <v-list-tile-action>
+            <v-icon>mdi-account</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title>Usuarios</v-list-tile-title>
+        </v-list-tile>
       </v-layout>
     </v-img>
   </v-navigation-drawer>
@@ -59,11 +68,12 @@
 
 <script>
 // Utilities
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations, mapState, mapGetters } from 'vuex'
 
 export default {
   data: () => ({
-    logo: './img/vuetifylogo.png',
+    logo: require('../../../public/img/vuetifylogo.png'),
+
     links: [
       {
         to: '/dashboard',
@@ -76,48 +86,48 @@ export default {
         text: 'Miembros'
       },
       {
-        to: '/table-list',
+        to: '/events',
         icon: 'mdi-calendar-multiple',
         text: 'Eventos'
-      },
-      {
-        to: '/typography',
-        icon: 'mdi-chart-pie',
-        text: 'Estadisticas'
       }
     ],
     responsive: false
   }),
   computed: {
     ...mapState('app', ['image', 'color']),
+
     inputValue: {
-      get () {
+      get() {
         return this.$store.state.app.drawer
       },
-      set (val) {
+      set(val) {
         this.setDrawer(val)
       }
     },
-    items () {
+    items() {
       return this.$t('Layout.View.items')
-    }
+    },
+    ...mapGetters(['isAuth', 'getUserRole'])
   },
-  mounted () {
+  mounted() {
     this.onResponsiveInverted()
     window.addEventListener('resize', this.onResponsiveInverted)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.onResponsiveInverted)
   },
   methods: {
     ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
-    onResponsiveInverted () {
+    onResponsiveInverted() {
       if (window.innerWidth < 991) {
         this.responsive = true
       } else {
         this.responsive = false
       }
     }
+  },
+  created() {
+    console.log(this.$store.state.auth.role)
   }
 }
 </script>

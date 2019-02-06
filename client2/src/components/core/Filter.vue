@@ -1,5 +1,6 @@
 <template>
   <v-menu
+    v-if="showFilter"
     :close-on-content-click="false"
     bottom
     left
@@ -36,7 +37,7 @@
                 @click="setColor(c)"
               />
             </v-layout>
-            <v-divider class="mt-3" />
+            <v-divider class="mt-3"/>
           </v-flex>
           <v-flex xs12>
             <div class="text-xs-center body-2 text-uppercase sidebar-filter">Imágenes</div>
@@ -65,6 +66,7 @@ import { mapMutations, mapState } from 'vuex'
 
 export default {
   data: () => ({
+    showFilter: false,
     colors: ['primary', 'info', 'success', 'warning', 'danger'],
     images: [
       'https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-1.23832d31.jpg',
@@ -76,14 +78,14 @@ export default {
 
   computed: {
     ...mapState('app', ['image', 'color']),
-    color () {
+    color() {
       return this.$store.state.app.color
     }
   },
 
   methods: {
     ...mapMutations('app', ['setImage']),
-    setColor (color) {
+    setColor(color) {
       this.$store.state.app.color = color
     }
   }
