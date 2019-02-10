@@ -11,7 +11,7 @@
         label="Buscar"
         single-line
         hide-details
-      ></v-text-field>
+      />
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -32,7 +32,7 @@
         slot="progress"
         color="blue"
         indeterminate
-      ></v-progress-linear>
+      />
       <template
         slot="items"
         slot-scope="{ index, item }"
@@ -51,12 +51,12 @@
             <v-icon>mdi-account-edit</v-icon>
           </v-btn>
           <v-btn
+            slot="activator"
             ripple
             icon
             color="danger"
-            @click="alertDeleteMember(item._id)"
-            slot="activator"
             dark
+            @click="alertDeleteMember(item._id)"
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
@@ -75,16 +75,16 @@
         >¿Desea eliminar este miembro?</v-card-title>
         <v-card-text>Presione Aceptar para eliminar definitivamente a este miembro.</v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-btn
             color="info"
             @click="resetDeleteMember"
           >Cancelar</v-btn>
           <v-btn
-            color="error"
-            @click="deleteMember"
             :disabled="isLoading"
             :loading="isLoading"
+            color="error"
+            @click="deleteMember"
           >Aceptar</v-btn>
         </v-card-actions>
       </v-card>
@@ -129,9 +129,9 @@ export default {
     // items: []
   }),
   computed: {
-    items() {
+    items () {
       const items = this.$store.state.members
-      function pad(n) {
+      function pad (n) {
         return n < 10 ? '0' + n : n
       }
       return items.map(item => {
@@ -149,20 +149,20 @@ export default {
     ...mapState(['isLoading'])
   },
   methods: {
-    resetDeleteMember() {
+    resetDeleteMember () {
       this.deleteMemberId = null
       this.showAlertDeleteMember = false
     },
-    goToMember(id) {
+    goToMember (id) {
       this.$router.push('/members/member/' + id)
     },
 
-    alertDeleteMember(id) {
+    alertDeleteMember (id) {
       this.deleteMemberId = id
       this.showAlertDeleteMember = true
     },
 
-    deleteMember() {
+    deleteMember () {
       this.$store.dispatch('setLoading', true)
       this.$store
         .dispatch('deleteMember', this.deleteMemberId)

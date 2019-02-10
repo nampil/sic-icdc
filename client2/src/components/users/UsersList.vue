@@ -1,60 +1,58 @@
 <template>
-  <material-card
-    color="info"
-  >
-  <div slot="header">
-    <v-layout row wrap justify-space-between align-center px-2>
-      
-   
-    <div class="title font-weight-light">Lista de Usuarios</div>
-     
-      
-       <v-tooltip bottom dark>
-      <v-btn small icon color="secondary" class="hidden" slot="activator" @click="newUserModal = true">
-        <v-icon>mdi-account-circle</v-icon>
-      </v-btn>
-      <span>Nuevo Usuario</span>
-    </v-tooltip>
-
-       </v-layout>
-    </div>
-    <v-card-title>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-account-search"
-        label="Buscar"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-    <v-list two-line>
-      <v-list-tile
-      v-if="users"
-        v-for="(user, index) in users"
-        :key="index"
+  <material-card color="info">
+    <div slot="header">
+      <v-layout
+        row
+        wrap
+        justify-space-between
+        align-center
+        px-2
       >
-        <v-list-tile-action>
-          <v-avatar 
-          
-          size="36px"
-          color="grey lighten-4">
+        <div class="title font-weight-light">Lista de Usuarios</div>
+
+        <v-tooltip
+          bottom
+          dark
+        >
+          <v-btn
+            slot="activator"
+            small
+            icon
+            color="secondary"
+            class="hidden"
+            @click="newUserModal = true"
+          >
+            <v-icon>mdi-account-circle</v-icon>
+          </v-btn>
+          <span>Nuevo Usuario</span>
+        </v-tooltip>
+      </v-layout>
+    </div>
+
+    <v-list
+      v-if="users"
+      two-line
+    >
+      <template v-for="(user, index) in usersFormat">
+        <v-list-tile :key="user.name">
+          <v-list-tile-avatar>
             <img
               src="https://vuetifyjs.com/apple-touch-icon-180x180.png"
               alt="avatar"
             >
-          </v-avatar>
-        </v-list-tile-action>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ user.name }}</v-list-tile-title>
+            <v-list-tile-sub-title>Email: {{ user.email }}</v-list-tile-sub-title>
+          </v-list-tile-content>
 
-        <v-list-tile-content>
-          <v-list-tile-title>{{user.name}}</v-list-tile-title>
-          <v-list-tile-sub-title>{{user.email}}</v-list-tile-sub-title>
-          <v-list-tile-sub-title>{{user.rol}}</v-list-tile-sub-title>
-        </v-list-tile-content>
-
-        <v-list-tile-action >
+          <v-list-tile-action>
+            <v-list-tile-action-text>{{ user.role }}</v-list-tile-action-text>
             <v-icon @click="alertDeleteUser(user._id)">mdi-delete</v-icon>
-        </v-list-tile-action>
-      </v-list-tile>
+          </v-list-tile-action>
+        </v-list-tile>
+        <v-divider :key="index"/>
+      </template>
     </v-list>
     <v-dialog
       v-model="showAlertDeleteUser"
@@ -68,16 +66,16 @@
         >¿Desea eliminar este usuario?</v-card-title>
         <v-card-text>Presione Aceptar para eliminar definitivamente a este usuario.</v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-btn
             color="info"
             @click="resetDeleteUser"
           >Cancelar</v-btn>
           <v-btn
-            color="error"
-            @click="deleteUser"
             :disabled="isLoading"
             :loading="isLoading"
+            color="error"
+            @click="deleteUser"
           >Aceptar</v-btn>
         </v-card-actions>
       </v-card>
@@ -85,13 +83,12 @@
     <v-dialog
       v-model="newUserModal"
       max-width="390px"
-      
     >
-    <v-card>
-      <v-card-text>
-        <users-NewUser/>
-      </v-card-text>
-    </v-card>
+      <v-card>
+        <v-card-text>
+          <users-NewUser @closeModal="newUserModal = false"/>
+        </v-card-text>
+      </v-card>
     </v-dialog>
   </material-card>
 </template>
@@ -100,7 +97,7 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'UsersList',
-  data() {
+  data () {
     return {
       search: null,
       showAlertDeleteUser: false,
@@ -112,21 +109,37 @@ export default {
     ...mapGetters({
       users: 'getAllUsers',
       isLoading: 'getIsloading'
-    })
+    }),
+    usersFormat () {
+      const uf = this.users.map(user => {
+        return {
+          ...user,
+          role: this.userRole(user)
+        }
+      })
+      return uf
+    }
   },
   methods: {
-    goToProfile(id){
+    userRole (user) {
+      const role = this.$store.state.roles.filter(
+        role => role.role === user.role
+      )[0]
+      console.log(role)
+      return role.title
+    },
+    goToProfile (id) {
       this.$router.push('/users/user/' + id)
     },
-     alertDeleteUser(id) {
+    alertDeleteUser (id) {
       this.deleteUserId = id
       this.showAlertDeleteUser = true
     },
-    resetDeleteUser(){
+    resetDeleteUser () {
       this.deleteUserId = null
       this.showAlertDeleteUser = false
     },
-    deleteUser(){
+    deleteUser () {
       this.$store.dispatch('setLoading', true)
       this.$store
         .dispatch('deleteUser', this.deleteUserId)
@@ -153,13 +166,13 @@ export default {
           this.showAlertDeleteUser = false
         })
     }
-  },
+  }
 }
 </script>
 
 <style lang="scss">
-  .bg{
-    background-color: #fff;
-    height: 100%;
-  }
+.bg {
+  background-color: #fff;
+  height: 100%;
+}
 </style>

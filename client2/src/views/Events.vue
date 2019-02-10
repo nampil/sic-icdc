@@ -13,34 +13,16 @@
       >
         <events-TotalEvents/>
       </v-flex>
-      <v-flex
-        sm6
-        xs12
-        md6
-        lg3
-      >
-        <members-TotalFemale/>
+      <v-flex xs12>
+        <n-calendar
+          :attributes="attrs"
+          is-linked
+          is-expanded
+        />
       </v-flex>
-      <v-flex
-        sm6
-        xs12
-        md6
-        lg3
-      >
-        <members-TotalMale/>
-      </v-flex>
-      <v-flex
-        sm6
-        xs12
-        md6
-        lg3
-      >
-        <members-TotalKids/>
-      </v-flex>
-      <n-calendar :attributes="attrs"></n-calendar>
 
       <v-flex xs12>
-        <events-EventsTable></events-EventsTable>
+        <events-EventsTable/>
       </v-flex>
     </v-layout>
   </v-container>
@@ -49,42 +31,46 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'Events',
-  data() {
+  data () {
     return {}
   },
   computed: {
-    attrs() {
+    attrs () {
       return this.rowEvents.map(event => ({
-        key: `event.${event.id}`,
-        dot: {
-          backgroundColor: '#blue'
+        key: `event.${event._id}`,
+        highlight: {
+          backgroundColor: this.getColor(event._id)
         },
-        // highlight: {
-        //   backgroundColor: '#ff8080'
+        // dot: {
+        //   backgroundColor: this.getColor(event._id)
         // },
-        // Just use a normal style
-        // contentStyle: {
-        //   color: '#fafafa'
-        // },
+
+        contentStyle: {
+          color: '#fafafa'
+        },
         popover: {
           label: event.title
         },
         dates: [
-          new Date(
-            new Date(event.eventDate).getFullYear(),
-            new Date(event.eventDate).getMonth(),
-            new Date(event.eventDate).getDate()
-          )
+          {
+            start: new Date(
+              new Date(event.eventDate).getFullYear(),
+              new Date(event.eventDate).getMonth(),
+              new Date(event.eventDate).getDate()
+            ),
+            end: new Date(
+              new Date(event.endDate).getFullYear(),
+              new Date(event.endDate).getMonth(),
+              new Date(event.endDate).getDate()
+            )
+          }
         ]
       }))
     },
     ...mapGetters({
       rowEvents: 'getEvents'
     }),
-    dates() {
-      return
-    },
-    events() {
+    events () {
       return this.rowEvents.map(event => {
         return {
           ...event,
@@ -100,7 +86,21 @@ export default {
     }
   },
   methods: {
-    formatDate(date) {
+    getColor (id) {
+      const eventSelected = this.events.filter(event => {
+        return event._id === id
+      })[0]
+
+      console.log(eventSelected)
+
+      const matchArea = this.$store.getters.getAreaScope.filter(area => {
+        return area.title === eventSelected.orgScope
+      })[0]
+      console.log()
+
+      return matchArea.color
+    },
+    formatDate (date) {
       const [year, month, day] = date.split('-')
 
       const dateVe = `${day}/${month}/${year}`

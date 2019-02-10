@@ -5,11 +5,11 @@ import router from '../router'
 let timeToLogout
 let timeToLoginAlert
 
-function StopTime(id) {
+function StopTime (id) {
   clearTimeout(id)
 }
 export default {
-  fetchGuests({
+  fetchGuests ({
     commit,
     state
   }) {
@@ -33,21 +33,20 @@ export default {
 
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
 
     return new Promise((resolve, reject) => {
-      return axios.post('/api/', query, headers)
+      return axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(res => {
           if (!res.status === 200 || !res.status === 201) {
-            throw new Error("fetching Guests failed with status: " + res.status + " & statusText:  " + res.statusText)
+            throw new Error('fetching Guests failed with status: ' + res.status + ' & statusText:  ' + res.statusText)
           }
           commit('setGuests', res.data.data.guests)
 
           return res
-
         }).then(res => {
           resolve(res)
         }).catch(err => {
@@ -55,10 +54,8 @@ export default {
           reject(err)
         })
     })
-
-
   },
-  fetchUsers({
+  fetchUsers ({
     commit,
     state
   }) {
@@ -75,12 +72,12 @@ export default {
     }
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
     return new Promise((resolve, reject) => {
-      axios.post('/api/', query, headers)
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(res => {
           commit('setUsers', res.data.data.users)
           resolve(res)
@@ -90,14 +87,12 @@ export default {
           reject(err)
         })
     })
-
   },
 
-  fetchMembers({
+  fetchMembers ({
     commit,
     state
   }) {
-
     const query = {
       query: `{
         members{
@@ -115,33 +110,28 @@ export default {
     }
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
     return new Promise((resolve, reject) => {
-      axios.post('/api/', query, headers)
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then((res) => {
-
-
           const formattedmembers = res.data.data.members.map(member => {
-
             return {
               ...member,
               address: member.address !== 'undefined' ? member.address : '',
               email: member.email !== 'undefined' ? member.email : '',
-              tel: member.tel !== 'undefined' ? member.tel : '',
+              tel: member.tel !== 'undefined' ? member.tel : ''
             }
           })
 
-
           if (!res.status === 200 || !res.status === 201) {
-            throw new Error("fetching Members failed with status: " + res.status + " & statusText:  " + res.statusText)
+            throw new Error('fetching Members failed with status: ' + res.status + ' & statusText:  ' + res.statusText)
           }
           const members =
             commit('setMembers', formattedmembers)
           return res
-
         })
         .then(res => {
           resolve(res)
@@ -153,14 +143,13 @@ export default {
     })
   },
 
-  fetchEvents({
+  fetchEvents ({
     commit,
     state
   }) {
-
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
@@ -174,6 +163,7 @@ export default {
             place
             description
             cordinator
+            orgScope
             staffAuv
             staffMav
             staffProto
@@ -199,10 +189,10 @@ export default {
 
     }
     return new Promise((resolve, reject) => {
-      axios.post('/api/', query, headers)
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(res => {
           if (!res.status === 0 || !res.status === 201) {
-            throw new Error("fetch Events failed with status: " + res.status + " & statusText:  " + res.statusText)
+            throw new Error('fetch Events failed with status: ' + res.status + ' & statusText:  ' + res.statusText)
           }
           commit('setEvents', res.data.data.events)
           return res
@@ -215,24 +205,21 @@ export default {
           reject(err)
         })
     })
-
   },
 
-
-  login({
+  login ({
     commit
   }, credentials) {
-
     return new Promise((resolve, reject) => {
       axios
-        .post("/api/", credentials, {
+        .post(process.env.VUE_APP_API_ENDPOINT, credentials, {
           headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
           }
         })
         .then(res => {
           if (res.status !== 200 && res.status !== 201) {
-            throw new Error("Failed!");
+            throw new Error('Failed!')
           }
           const auth = res.data.data.login
 
@@ -246,24 +233,21 @@ export default {
         .catch(err => {
           reject(err)
           console.log(err)
-        });
+        })
     })
-
   },
-  logout({
+  logout ({
     commit
   }) {
-
-    localStorage.clear();
+    localStorage.clear()
     commit('destroyAuth')
-
   },
-  setLoading({
+  setLoading ({
     commit
   }, payload) {
     commit('loading', payload)
   },
-  toggleAlert({
+  toggleAlert ({
     commit
   }, args) {
     commit('setAlert', args)
@@ -272,8 +256,6 @@ export default {
     commit,
     dispatch
   }) => {
-
-
     StopTime(timeToLoginAlert)
     StopTime(timeToLogout)
 
@@ -281,15 +263,12 @@ export default {
       dispatch('logout')
       commit('loginAlert', false)
       router.push('/login')
-
-    }, 1000 * 60 * 59);
+    }, 1000 * 60 * 59)
     timeToLoginAlert = setTimeout(() => {
       commit('loginAlert', true)
-
-    }, 1000 * 60 * 58);
-
+    }, 1000 * 60 * 58)
   },
-  relogin({
+  relogin ({
     commit,
     state,
     dispatch
@@ -307,16 +286,16 @@ export default {
     }
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
 
     axios
-      .post("/api/", reLoginQuery, headers)
+      .post(process.env.VUE_APP_API_ENDPOINT, reLoginQuery, headers)
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
-          throw new Error("relogin Failed!");
+          throw new Error('relogin Failed!')
         }
 
         const auth = res.data.data.relogin
@@ -330,17 +309,13 @@ export default {
         commit('loginAlert', false)
 
         return res
-
       }).then(res => {
         dispatch('loadData')
         dispatch('startTime')
-
       })
       .catch(err => {
-
         console.log(err)
-      });
-
+      })
   },
 
   deleteUser: ({
@@ -356,13 +331,13 @@ export default {
     }
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
 
     return new Promise((resolve, reject) => {
-      axios.post('/api/', query, headers)
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(res => {
           resolve(res)
         }).catch(err => {
@@ -370,12 +345,10 @@ export default {
           console.log(err)
         })
     })
-
   },
   deleteMember: ({
     state
   }, id) => {
-
     const query = {
       query: `mutation {
         deleteMember(memberId: "${id}"){
@@ -386,12 +359,12 @@ export default {
     }
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
     return new Promise((resolve, reject) => {
-      axios.post('/api/', query, headers)
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(res => {
           resolve(res)
         }).catch(err => {
@@ -399,9 +372,52 @@ export default {
           console.log(err)
         })
     })
-
   },
-  createMember({
+  createUser ({
+    state,
+    dispatch
+  }, newUser) {
+    const query = {
+      query: `
+        mutation{
+          createUser(
+            userInput: {
+              name: "${newUser.name}",
+              password: "${newUser.password}",
+              email: "${newUser.email}",
+              role: ${newUser.role}
+            })
+            {
+              _id
+              name
+              email
+              role
+            }
+        }`
+    }
+
+    const headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + state.auth.token
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
+        .then(res => {
+          dispatch('fetchUsers')
+
+          resolve(res)
+        })
+        .catch(err => {
+          console.log(err)
+          reject(err)
+        })
+    })
+  },
+
+  createMember ({
     dispatch,
     state
   }, member) {
@@ -434,7 +450,7 @@ export default {
 
     return new Promise((resolve, reject) => {
       axios
-        .post('/api/', query, headers)
+        .post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(async res => {
           await dispatch('fetchMembers')
           resolve(res)
@@ -445,9 +461,8 @@ export default {
           reject(err)
         })
     })
-
   },
-  createEvent({
+  createEvent ({
     dispatch,
     state
   }, event) {
@@ -460,6 +475,7 @@ export default {
             endDate: "${event.endDate}",
             place: "${event.place}",
             description: "${event.description}",
+            orgScope: "${event.orgScope}",
             cordinator: "${event.cordinator}",
             staffAuv:${JSON.stringify(event.staffAuv)},
             staffMav:${JSON.stringify(event.staffMav)},
@@ -477,35 +493,32 @@ export default {
 
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
     return new Promise((resolve, reject) => {
-      axios.post("/api/", query, headers)
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(res => {
           console.log(res)
           if (res.status !== 200 && res.status !== 201) {
-            throw new Error("Create new event failed!");
+            throw new Error('Create new event failed!')
           }
           dispatch('fetchEvents')
 
           return res
-
         }).then(res => {
           resolve(res)
         })
         .catch(err => {
           reject(err)
-          console.log(err);
-
+          console.log(err)
         })
     })
   },
   deleteEvent: ({
     state
   }, id) => {
-
     const query = {
       query: `mutation {
         deleteEvent(eventId: "${id}"){
@@ -516,12 +529,12 @@ export default {
     }
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
     return new Promise((resolve, reject) => {
-      axios.post('/api/', query, headers)
+      axios.post(process.env.VUE_APP_API_ENDPOINT, query, headers)
         .then(res => {
           resolve(res)
         }).catch(err => {
@@ -529,9 +542,8 @@ export default {
           console.log(err)
         })
     })
-
   },
-  createGuest({
+  createGuest ({
     commit,
     state
   }, guest) {
@@ -547,12 +559,12 @@ export default {
     }
     const headers = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + state.auth.token
       }
     }
     return new Promise((resolve, reject) => {
-      axios.post('/api/', queryDos, headers).then(res => {
+      axios.post(process.env.VUE_APP_API_ENDPOINT, queryDos, headers).then(res => {
         resolve(res)
       }).catch(err => {
         console.log(err)
@@ -561,13 +573,13 @@ export default {
     })
   },
 
-
-
-  async loadData({
+  async loadData ({
     commit,
-    dispatch
+    dispatch,
+    state
   }) {
     let counter = 0
+
     commit('loading', true)
     await dispatch('fetchEvents')
       .then(res => {
@@ -592,15 +604,17 @@ export default {
       })
       .catch(err => console.log(err))
 
-    await dispatch('fetchUsers')
-      .then(res => {
-        counter++
-        console.log('users fetched')
-      })
-      .catch(err => console.log(err))
+    if (state.auth.role === 5) {
+      await dispatch('fetchUsers')
+        .then(res => {
+          counter++
+          console.log('users fetched')
+        })
+        .catch(err => console.log(err))
+    }
 
-    if (counter === 4) {
-      console.log('Data loaded');
+    if (counter >= 4) {
+      console.log('Data loaded')
 
       commit('loading', false)
     }

@@ -15,7 +15,7 @@ import store from '../store/'
 // Routes
 import paths from './paths'
 
-function route(path, view, name, meta) {
+function route (path, view, name, meta) {
   return {
     name: name || view,
     meta,
@@ -31,11 +31,12 @@ Vue.use(Router)
 // Create a new router
 const router = new Router({
   mode: 'history',
+
   routes: paths.map(path => route(path.path, path.view, path.name, path.meta)).concat([{
     path: '*',
     redirect: '/dashboard'
   }]),
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
     }
@@ -52,10 +53,8 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-
   // ...
   if (to.meta.requiresAuth) {
-
     const isAuth = window.localStorage.getItem('token')
     if (isAuth) {
       next()
@@ -67,7 +66,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
-
 })
 
 Vue.use(Meta)

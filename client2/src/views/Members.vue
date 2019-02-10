@@ -49,7 +49,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Members',
-  data() {
+  data () {
     return {
       tabs: 0,
       list: {
@@ -59,11 +59,11 @@ export default {
       }
     }
   },
+  created () {},
   methods: {
-    complete(index) {
+    complete (index) {
       this.list[index] = !this.list[index]
     }
-  },
-  created() {}
+  }
 }
 </script>

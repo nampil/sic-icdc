@@ -13,20 +13,20 @@
 
 <script>
 export default {
-  metaInfo() {
+  metaInfo () {
     return {
-      title: "SIC - ICDC"
-    };
+      title: 'SIC - ICDC'
+    }
   },
-  data() {
-    return {};
+  data () {
+    return {}
   },
   computed: {
-    alertData() {
-      return this.$store.getters.getAlert;
+    alertData () {
+      return this.$store.getters.getAlert
     }
   }
-};
+}
 </script>
 
 <style>

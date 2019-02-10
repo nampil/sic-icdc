@@ -11,7 +11,7 @@
         label="Buscar"
         single-line
         hide-details
-      ></v-text-field>
+      />
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -32,7 +32,7 @@
         slot="progress"
         color="blue"
         indeterminate
-      ></v-progress-linear>
+      />
       <template
         slot="items"
         slot-scope="{ index, item }"
@@ -62,13 +62,13 @@
             <v-icon>mdi-calendar-edit</v-icon>
           </v-btn>
           <v-btn
+            slot="activator"
             class="action-btn"
             ripple
             icon
             color="danger"
-            @click="alertDeleteEvent(item._id)"
-            slot="activator"
             dark
+            @click="alertDeleteEvent(item._id)"
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
@@ -87,16 +87,16 @@
         >¿Desea eliminar este evento?</v-card-title>
         <v-card-text>Presione Aceptar para eliminar definitivamente este evento.</v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-btn
             color="info"
             @click="resetDeleteEvent"
           >Cancelar</v-btn>
           <v-btn
-            color="error"
-            @click="deleteEvent"
             :disabled="isLoading"
             :loading="isLoading"
+            color="error"
+            @click="deleteEvent"
           >Aceptar</v-btn>
         </v-card-actions>
       </v-card>
@@ -138,9 +138,9 @@ export default {
     // items: []
   }),
   computed: {
-    items() {
+    items () {
       const items = this.$store.state.events
-      function pad(n) {
+      function pad (n) {
         return n < 10 ? '0' + n : n
       }
       return items.map(item => {
@@ -159,22 +159,22 @@ export default {
     ...mapState(['isLoading'])
   },
   methods: {
-    resetDeleteEvent() {
+    resetDeleteEvent () {
       this.deleteEventId = null
       this.showAlertDeleteEvent = false
     },
-    goToEvent(id) {
+    goToEvent (id) {
       this.$router.push('/events/event/' + id)
     },
-    goToAdminEvent(id) {
+    goToAdminEvent (id) {
       this.$router.push('/events/event/' + id + '/admin')
     },
-    alertDeleteEvent(id) {
+    alertDeleteEvent (id) {
       this.deleteEventId = id
       this.showAlertDeleteEvent = true
     },
 
-    deleteEvent() {
+    deleteEvent () {
       this.$store.dispatch('setLoading', true)
       this.$store
         .dispatch('deleteEvent', this.deleteEventId)
@@ -215,4 +215,3 @@ export default {
   color: rgba(0, 0, 0, 0.54);
 }
 </style>
-

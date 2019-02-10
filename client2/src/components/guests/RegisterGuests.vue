@@ -8,7 +8,7 @@
       >
         <v-flex xs10>
           <div class="title font-weight-light mb-2">Registro de Invitados</div>
-          <div class="category"></div>
+          <div class="category"/>
         </v-flex>
       </v-layout>
     </div>
@@ -33,23 +33,23 @@
             class="text-xs-center"
           >
             <v-progress-circular
-              class="progress"
               :size="70"
               :width="7"
+              class="progress"
               color="purple"
               indeterminate
-            ></v-progress-circular>
+            />
           </v-flex>
         </v-layout>
       </div>
       <v-layout wrap>
         <v-flex xs12>
           <v-text-field
+            v-model="guest.name"
             label="Nombre"
             color="secondary"
             required
-            v-model="guest.name"
-          ></v-text-field>
+          />
         </v-flex>
 
         <v-flex
@@ -57,12 +57,12 @@
           md6
         >
           <v-text-field
+            v-model="guest.tel"
+            :rules="telRules"
             label="Teléfono"
             color="secondary"
-            v-model="guest.tel"
             mask="(####) ###-####"
             validate-on-blur
-            :rules="telRules"
             prepend-inner-icon="mdi-cellphone-iphone"
           />
         </v-flex>
@@ -71,11 +71,11 @@
           md6
         >
           <v-text-field
+            v-model="guest.email"
+            :rules="emailRules"
             label="Email"
             color="secondary"
             type="email"
-            v-model="guest.email"
-            :rules="emailRules"
             validate-on-blur
             prepend-inner-icon="mdi-email"
           />
@@ -87,17 +87,17 @@
           <v-text-field
             label="Invitado por"
             color="secondary"
-          ></v-text-field>
+          />
         </v-flex>
         <v-flex
           xs12
           sm6
         >
           <v-select
-            color="secondary"
-            label="Genero"
             v-model="guest.gender"
             :items="gender"
+            color="secondary"
+            label="Genero"
             prepend-inner-icon="mdi-gender-male-female"
           />
         </v-flex>
@@ -119,23 +119,23 @@
             min-width="290px"
           >
             <v-text-field
-              color="secondary"
               slot="activator"
               v-model="computedDateFormatted"
+              color="secondary"
               label="Fecha de Nacimiento"
               readonly
               prepend-icon="mdi-calendar-star"
-            ></v-text-field>
+            />
 
             <v-date-picker
-              class="datePicker"
-              locale="ES-ve"
               ref="picker"
               :max="new Date().toISOString().substr(0, 10)"
-              min="1900-01-01"
               v-model="guest.bdate"
+              class="datePicker"
+              locale="ES-ve"
+              min="1900-01-01"
             >
-              <v-spacer></v-spacer>
+              <v-spacer/>
               <v-btn
                 flat
                 color="primary"
@@ -154,11 +154,11 @@
           md6
         >
           <v-checkbox
+            v-model="add"
             label="¿Desea añadir a este usuario al evento actual?"
             color="secondary"
-            v-model="add"
             hide-details
-          ></v-checkbox>
+          />
         </v-flex>
       </v-layout>
     </v-form>
@@ -168,16 +168,16 @@
       slot="actions"
       class="fullwidth"
     >
-      <v-spacer></v-spacer>
+      <v-spacer/>
       <v-btn
         class="ml-auto"
         color="tertiary"
         @click="closeModal"
       >Cancelar</v-btn>
       <v-btn
-        @click="registerGuest"
         class="ml-4"
         color="success"
+        @click="registerGuest"
       >Registrar</v-btn>
     </v-card-actions>
   </material-card>
@@ -188,7 +188,7 @@ export default {
   props: {
     eventId: String
   },
-  data() {
+  data () {
     return {
       menu1: false,
       guest: {},
@@ -198,41 +198,42 @@ export default {
       add: false
     }
   },
-  watch: {
-    menu1(val) {
-      val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
-    }
-  },
   computed: {
-    isloading() {
+    isloading () {
       return this.$store.getters.getIsloading
     },
     computedDateFormatted: {
-      get: function() {
+      get: function () {
         return this.formatDate(this.guest.bdate)
       },
-      set: function(val) {
+      set: function (val) {
         return (this.guest.bdate = val)
       }
     }
   },
+  watch: {
+    menu1 (val) {
+      val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+    }
+  },
+  created () {},
   methods: {
-    closeModal() {
+    closeModal () {
       this.$emit('close-modal')
       this.$refs.guestForm.reset()
     },
-    resetBdate() {
+    resetBdate () {
       this.menu1 = false
       this.guest.bdate = undefined
     },
-    formatDate(date) {
+    formatDate (date) {
       if (!date) return null
 
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
 
-    registerGuest(val) {
+    registerGuest (val) {
       this.$store.commit('loading', true)
       const index = this.$store.state.events
         .map(event => event._id)
@@ -262,8 +263,7 @@ export default {
           this.$store.commit('loading', false)
         })
     }
-  },
-  created() {}
+  }
 }
 </script>
 

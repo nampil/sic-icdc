@@ -89,10 +89,10 @@ export default {
   },
 
   computed: {
-    hasOffset() {
+    hasOffset () {
       return this.$slots.header || this.$slots.offset || this.title || this.text
     },
-    styles() {
+    styles () {
       if (!this.hasOffset) return null
 
       return {

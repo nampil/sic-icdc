@@ -20,6 +20,11 @@ const eventSchema = new Schema({
         type: String,
         required: true
     },
+    orgScope: {
+        type: String,
+        required: true
+    },
+
     cordinator: {
         type: String,
     },

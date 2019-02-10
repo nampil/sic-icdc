@@ -1,11 +1,11 @@
 <template>
   <material-stats-card
     :value="totalEventos"
+    :sub-text="'Al ' + today "
     color="green"
     icon="mdi-account-group"
     title="Total de Eventos"
     sub-icon="mdi-calendar"
-    :sub-text="'Al ' + today "
   />
 </template>
 <script>
@@ -16,10 +16,10 @@ export default {
     ...mapState({
       events: 'events'
     }),
-    totalEventos() {
+    totalEventos () {
       return JSON.stringify(this.events.length)
     },
-    today() {
+    today () {
       const date = new Date().toLocaleDateString(['es-VE'], {
         day: '2-digit',
         month: 'short',

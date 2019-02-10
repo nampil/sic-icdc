@@ -3,6 +3,9 @@
 export default {
 
   //
+  getAreaScope: state => {
+    return state.areaScope
+  },
   getUserRole: state => {
     return state.auth.role
   },
@@ -50,15 +53,14 @@ export default {
   },
   getMembersKidsCount: state => {
     if (state.members) {
-      let membersAges = [];
+      let membersAges = []
       for (let i = 0; i < state.members.length; i++) {
-        let memberAge = Math.abs(Date.now() - new Date(state.members[i].bdate));
-        membersAges.push(Math.floor(memberAge / 31557600000));
+        let memberAge = Math.abs(Date.now() - new Date(state.members[i].bdate))
+        membersAges.push(Math.floor(memberAge / 31557600000))
       }
       return membersAges.filter(membersAges => {
         return membersAges < 12
       }).length.toString()
-
     } else {
       return '0'
     }
@@ -67,15 +69,15 @@ export default {
     if (state.members.length > 0) {
       const member = state.members.find(member => member._id === id)
 
-      function pad(n) {
-        return n < 10 ? "0" + n : n;
+      function pad (n) {
+        return n < 10 ? '0' + n : n
       }
       return {
         ...member,
         bdate: new Date(member.bdate).getUTCFullYear() +
-          "-" +
+          '-' +
           pad(new Date(member.bdate).getUTCMonth() + 1) +
-          "-" +
+          '-' +
           pad(new Date(member.bdate).getUTCDate())
       }
     } else {
@@ -86,16 +88,16 @@ export default {
     if (state.events.length > 0) {
       const event = state.events.find(event => event._id === id)
 
-      function pad(n) {
-        return n < 10 ? "0" + n : n;
+      function pad (n) {
+        return n < 10 ? '0' + n : n
       }
       return {
         ...event,
         eventDate: new Date(event.eventDate).toLocaleString(['es-VE'], {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          })
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        })
           .split('/')
           .reverse()
           .join('-'),
@@ -105,10 +107,10 @@ export default {
           minute: '2-digit'
         }),
         endDate: new Date(event.endDate).toLocaleString(['es-VE'], {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          })
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        })
           .split('/')
           .reverse()
           .join('-'),
@@ -116,7 +118,7 @@ export default {
           hour12: false,
           hour: '2-digit',
           minute: '2-digit'
-        }),
+        })
 
       }
     } else {

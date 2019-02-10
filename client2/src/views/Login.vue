@@ -13,31 +13,31 @@
         >
           <v-form
             ref="form"
-            v-on:submit.prevent="submit"
+            @submit.prevent="submit"
           >
             <v-alert
               :value="hasErr"
               type="error"
               transition="scale-transition"
-            >{{errMsg}}</v-alert>
+            >{{ errMsg }}</v-alert>
 
             <v-text-field
-              prepend-icon="mdi-account"
               v-model="usuario"
+              :rules="[rules.required]"
+              prepend-icon="mdi-account"
               required
               label="Email"
-              :rules="[rules.required]"
-            ></v-text-field>
+            />
             <v-text-field
-              prepend-icon="mdi-key"
               :append-icon="show1 ? 'mdi-eye-off' : 'mdi-eye'"
               v-model="password"
+              :type="show1 ? 'text' : 'password'"
+              :rules="[rules.required]"
+              prepend-icon="mdi-key"
               required
               label="Clave"
-              :type="show1 ? 'text' : 'password'"
               @click:append="show1 = !show1"
-              :rules="[rules.required]"
-            ></v-text-field>
+            />
             <v-btn
               color="primary"
               class="ma-2"
@@ -59,8 +59,8 @@ import axios from 'axios'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'login',
-  data() {
+  name: 'Login',
+  data () {
     return {
       usuario: '',
       password: '',
@@ -73,13 +73,13 @@ export default {
     }
   },
   computed: {
-    credentials() {
+    credentials () {
       const authQuery = {
         query: `
                 query {
                     login(email: "${this.usuario}", password: "${
-          this.password
-        }")
+  this.password
+}")
                     {
                         userId
                         token
@@ -94,14 +94,14 @@ export default {
     }
   },
   methods: {
-    clearForm() {
+    clearForm () {
       this.usuario = ''
       this.password = ''
       this.hasErr = false
       this.errMsg = ''
       this.$refs.form.reset()
     },
-    submit() {
+    submit () {
       if (
         !this.usuario ||
         !this.password ||

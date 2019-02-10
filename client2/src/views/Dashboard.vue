@@ -317,7 +317,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       dailySalesChart: {
         data: {
@@ -394,7 +394,7 @@ export default {
             {
               seriesBarDistance: 5,
               axisX: {
-                labelInterpolationFnc: function(value) {
+                labelInterpolationFnc: function (value) {
                   return value[0]
                 }
               }
@@ -472,16 +472,11 @@ export default {
       }
     }
   },
-  methods: {
-    complete(index) {
-      this.list[index] = !this.list[index]
-    }
-  },
-  async created() {
+  async created () {
     this.$store.commit('loading', true)
 
     const vue = this
-    const loadData = await function() {
+    const loadData = await function () {
       if (vue.$store.state.auth.token) {
         vue.$store
           .dispatch('fetchEvents')
@@ -507,6 +502,11 @@ export default {
     }
     if (loadData) {
       vue.$store.commit('loading', false)
+    }
+  },
+  methods: {
+    complete (index) {
+      this.list[index] = !this.list[index]
     }
   }
 }

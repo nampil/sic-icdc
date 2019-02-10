@@ -1,18 +1,18 @@
 <template>
   <v-container
+    v-if="event"
     class="admin-event"
     fill-height
     fluid
     grid-list-xl
-    v-if="event"
   >
     <v-layout wrap>
       <v-toolbar color="info">
         <v-toolbar-title
-          class="white--text"
           v-if="event"
-        >{{event.title}}</v-toolbar-title>
-        <v-spacer></v-spacer>
+          class="white--text"
+        >{{ event.title }}</v-toolbar-title>
+        <v-spacer/>
         <v-toolbar-items class="align-center">
           <v-dialog
             v-model="registerGuestModal"
@@ -29,9 +29,9 @@
             <v-card>
               <v-card-text>
                 <guests-RegisterGuests
-                  v-on:close-modal="closeModal"
-                  :eventId="event._id"
-                ></guests-RegisterGuests>
+                  :event-id="event._id"
+                  @close-modal="closeModal"
+                />
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -39,8 +39,8 @@
       </v-toolbar>
       <v-flex xs12>
         <material-card
-          color="primary"
           v-if="event"
+          color="primary"
         >
           <div slot="header">
             <v-layout
@@ -51,16 +51,16 @@
               <v-flex xs10>
                 <div class="title font-weight-light mb-2">Asistencia</div>
                 <div
-                  class="category"
                   v-if="showCountdown"
+                  class="category"
                 >
                   Evento comienza en:
-                  <span v-if="showCountdown && daysTgo * 1 > 0">{{daysTgo}}:</span>
-                  <span v-if="showCountdown && hoursTgo * 1 > 0">{{hoursTgo}}:</span>
-                  <span v-if="showCountdown && ((hoursTgo * 1) + (minsTgo * 1)) > 0">{{minsTgo}}:</span>
+                  <span v-if="showCountdown && daysTgo * 1 > 0">{{ daysTgo }}:</span>
+                  <span v-if="showCountdown && hoursTgo * 1 > 0">{{ hoursTgo }}:</span>
+                  <span v-if="showCountdown && ((hoursTgo * 1) + (minsTgo * 1)) > 0">{{ minsTgo }}:</span>
                   <span
                     v-if="showCountdown && (( hoursTgo * 1) + (minsTgo * 1) + (secsTgo * 1)) > 0"
-                  >{{secsTgo}}</span>
+                  >{{ secsTgo }}</span>
                 </div>
               </v-flex>
               <v-flex
@@ -68,9 +68,9 @@
                 class="text-xs-right"
               >
                 <v-btn
+                  :color="activeColor"
                   fab
                   dark
-                  :color="activeColor"
                   @click="event.active = !event.active"
                 >
                   <v-icon
@@ -96,40 +96,40 @@
                     ref="eventMemberAsist"
                     :disabled="!event.active"
                     v-model="event.memberAsist"
+                    :items="members"
                     label="Miembros"
                     small-chips
                     multiple
                     cache-items
-                    :items="members"
-                  ></v-combobox>
+                  />
                 </v-flex>
                 <v-flex xs12>
                   <v-combobox
                     ref="eventGuests"
                     :disabled="!event.active"
                     v-model="computedEventGuests"
+                    :items="guests"
                     label="Invitados"
                     small-chips
                     multiple
                     cache-items
-                    :items="guests"
-                  ></v-combobox>
+                  />
                 </v-flex>
               </v-layout>
             </v-form>
           </v-card-text>
 
           <v-card-actions slot="actions">
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-btn
-              @click="saveAdminEvent"
               color="success"
+              @click="saveAdminEvent"
             >Guardar</v-btn>
           </v-card-actions>
         </material-card>
       </v-flex>
 
-      <v-flex xs12></v-flex>
+      <v-flex xs12/>
     </v-layout>
   </v-container>
 </template>
@@ -138,7 +138,7 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'AdminEvent',
-  data() {
+  data () {
     return {
       event: this.$store.getters.getEventById(this.$route.params.id),
       daysTgo: null,
@@ -151,21 +151,9 @@ export default {
       registerGuestModal: false
     }
   },
-  watch: {
-    eventState(val) {
-      this.event = val
-    },
-    chekcActive(val) {
-      if (val === true) {
-        this.activeColor = 'success'
-      } else {
-        this.activeColor = 'warning'
-      }
-    }
-  },
   computed: {
     computedEventGuests: {
-      get: function() {
+      get: function () {
         const arrayGuestsObjs = this.event.guests.map(id => {
           const guestById = this.$store.getters.getAllGuests.filter(
             guest => guest._id === id
@@ -190,7 +178,7 @@ export default {
           return []
         }
       },
-      set: function(payload) {
+      set: function (payload) {
         const index = this.$store.state.events
           .map(event => {
             return event._id
@@ -213,17 +201,17 @@ export default {
         this.$store.commit('setGuestsOnEvent', topayload)
       }
     },
-    guests() {
+    guests () {
       return this.$store.getters.getAllGuests.map(guest => guest.name)
     },
-    members() {
+    members () {
       return this.$store.getters.getAllMembers.map(member => member.name)
     },
-    chekcActive() {
+    chekcActive () {
       if (this.event) return this.event.active
     },
 
-    eventState() {
+    eventState () {
       const eventSt = this.$store.getters.getEventById(this.$route.params.id)
 
       if (eventSt) {
@@ -235,11 +223,30 @@ export default {
       return eventSt
     }
   },
+  watch: {
+    eventState (val) {
+      this.event = val
+    },
+    chekcActive (val) {
+      if (val === true) {
+        this.activeColor = 'success'
+      } else {
+        this.activeColor = 'warning'
+      }
+    }
+  },
+  created () {},
+  mounted () {
+    this.setActive()
+  },
+  beforeDestroy () {
+    clearInterval(this.x)
+  },
   methods: {
-    closeModal() {
+    closeModal () {
       this.registerGuestModal = false
     },
-    setActive() {
+    setActive () {
       if (this.eventState) {
         const [ye, mo, da] = this.eventState.eventDate.split('-')
         const [ho, mi] = this.eventState.eventTime.split(':')
@@ -256,21 +263,21 @@ export default {
         }
       }
     },
-    setState(localState) {
+    setState (localState) {
       return (this.event = localState)
     },
-    countDown(date, time) {
+    countDown (date, time) {
       const vm = this
       const [ye, mo, da] = date.split('-')
       const [ho, mi] = time.split(':')
 
-      return (this.x = setInterval(function() {
-        function pad(n) {
+      return (this.x = setInterval(function () {
+        function pad (n) {
           return n < 10 ? '0' + n : n
         }
         const eventDate = new Date(ye, mo - 1, da, ho, mi, 0, 0)
         const now = Date.now()
-        //const eventDate = new Date(date)
+        // const eventDate = new Date(date)
         const timeTo = eventDate - now
         if (timeTo > 0) {
           vm.showCountdown = true
@@ -291,14 +298,7 @@ export default {
       }, 1000))
     },
 
-    saveAdminEvent() {}
-  },
-  created() {},
-  mounted() {
-    this.setActive()
-  },
-  beforeDestroy() {
-    clearInterval(this.x)
+    saveAdminEvent () {}
   }
 }
 </script>

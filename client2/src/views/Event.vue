@@ -6,8 +6,9 @@
       offset-sm1
     >
       <material-card
-        color="info darken-3"
+        v-if="event"
         :title="event.title"
+        color="info darken-3"
         text="Registre los datos para el nuevo evento"
       >
         <v-form ref="newEventForm">
@@ -30,12 +31,12 @@
                   class="text-xs-center"
                 >
                   <v-progress-circular
-                    class="progress"
                     :size="70"
                     :width="7"
+                    class="progress"
                     color="purple"
                     indeterminate
-                  ></v-progress-circular>
+                  />
                 </v-flex>
               </v-layout>
             </div>
@@ -45,15 +46,12 @@
             </v-flex>
 
             <v-layout wrap>
-              <v-flex
-                xs12
-                md6
-              >
+              <v-flex xs12>
                 <v-text-field
-                  class="purple-input"
-                  label="Titulo"
                   v-model="event.title"
                   :rules="[rules.required]"
+                  class="purple-input"
+                  label="Titulo"
                   prepend-inner-icon="mdi-calendar-week"
                 />
               </v-flex>
@@ -61,10 +59,25 @@
                 xs12
                 md6
               >
+                <v-select
+                  v-model="event.orgScope"
+                  :items="areaScope"
+                  hint="Organismo responsable del evento"
+                  item-text="areaScope"
+                  item-value="areaScope"
+                  label="Área de Coordinación"
+                  single-line
+                  prepend-inner-icon="mdi-clipboard-flow"
+                />
+              </v-flex>
+              <v-flex
+                xs12
+                md6
+              >
                 <v-text-field
+                  v-model="event.cordinator"
                   class="purple-input"
                   label="Coordinador"
-                  v-model="event.cordinator"
                   prepend-inner-icon="mdi-clipboard-account"
                 />
               </v-flex>
@@ -89,13 +102,13 @@
                 </div>
 
                 <v-date-picker
-                  class="datePicker"
-                  :events="eventsDates"
-                  locale="ES-ve"
                   ref="picker"
+                  :events="eventsDates"
                   :max="maxDate"
-                  min="2019-01-01"
                   v-model="event.eventDate"
+                  class="datePicker"
+                  locale="ES-ve"
+                  min="2019-01-01"
                   full-width
                   @input="showErrorDate = false"
                 >
@@ -116,9 +129,9 @@
                 <div class="errorMessagesWrapper">
                   <v-slide-y-transition>
                     <div
-                      class="error--text"
                       v-if="showErrorDate"
-                    >{{datePickerError}}</div>
+                      class="error--text"
+                    >{{ datePickerError }}</div>
                   </v-slide-y-transition>
                 </div>
               </v-flex>
@@ -162,9 +175,9 @@
                 <div class="errorMessagesWrapper">
                   <v-slide-y-transition>
                     <div
-                      class="error--text"
                       v-if="showErrorTime"
-                    >{{timePickerError}}</div>
+                      class="error--text"
+                    >{{ timePickerError }}</div>
                   </v-slide-y-transition>
                 </div>
               </v-flex>
@@ -187,13 +200,13 @@
                   </v-layout>
                 </div>
                 <v-date-picker
-                  class="datePicker"
-                  :events="eventsDates"
-                  locale="ES-ve"
                   ref="pickerC"
+                  :events="eventsDates"
                   :max="maxDate"
                   :min="minDateC"
                   v-model="event.endDate"
+                  class="datePicker"
+                  locale="ES-ve"
                   full-width
                   @input="showErrorDateC = false"
                 >
@@ -215,9 +228,9 @@
                 <div class="errorMessagesWrapper">
                   <v-slide-y-transition>
                     <div
-                      class="error--text"
                       v-if="showErrorDateC"
-                    >{{datePickerErrorC}}</div>
+                      class="error--text"
+                    >{{ datePickerErrorC }}</div>
                   </v-slide-y-transition>
                 </div>
               </v-flex>
@@ -241,11 +254,11 @@
                 </div>
                 <v-time-picker
                   v-model="event.eventTimeC"
+                  :max="maxTimeC"
+                  :min="minTimeC"
                   color="secondary"
                   full-width
                   class="timePicker"
-                  :max="maxTimeC"
-                  :min="minTimeC"
                   @input="showErrorTimeC = false"
                 >
                   <v-flex
@@ -263,9 +276,9 @@
                 <div class="errorMessagesWrapper">
                   <v-slide-y-transition>
                     <div
-                      class="error--text"
                       v-if="showErrorTimeC"
-                    >{{timePickerErrorC}}</div>
+                      class="error--text"
+                    >{{ timePickerErrorC }}</div>
                   </v-slide-y-transition>
                 </div>
               </v-flex>
@@ -274,13 +287,13 @@
                 md6
               >
                 <v-text-field
-                  name="place"
-                  label="Lugar"
                   id="place"
                   v-model="event.place"
                   :rules="[placeRules.required]"
+                  name="place"
+                  label="Lugar"
                   prepend-inner-icon="mdi-map-marker"
-                ></v-text-field>
+                />
               </v-flex>
 
               <v-flex
@@ -288,13 +301,13 @@
                 md6
               >
                 <v-text-field
+                  id="description"
+                  v-model="event.description"
                   name="description"
                   label="Descripción"
-                  id="description"
                   hint="Breve descripción del evento"
-                  v-model="event.description"
                   prepend-inner-icon="mdi-tooltip-text"
-                ></v-text-field>
+                />
               </v-flex>
               <v-flex xs12>
                 <h3 class="section-title">Servidores</h3>
@@ -306,7 +319,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-bookmark-music"
-                ></v-combobox>
+                />
               </v-flex>
               <v-flex xs12>
                 <v-combobox
@@ -315,7 +328,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-human-greeting"
-                ></v-combobox>
+                />
               </v-flex>
               <v-flex xs12>
                 <v-combobox
@@ -324,7 +337,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-guy-fawkes-mask"
-                ></v-combobox>
+                />
               </v-flex>
               <v-flex xs12>
                 <v-combobox
@@ -333,7 +346,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-teach"
-                ></v-combobox>
+                />
               </v-flex>
               <v-flex xs12>
                 <v-combobox
@@ -342,7 +355,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-speaker"
-                ></v-combobox>
+                />
               </v-flex>
               <v-flex xs12>
                 <v-combobox
@@ -351,7 +364,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-worker"
-                ></v-combobox>
+                />
               </v-flex>
 
               <v-flex
@@ -365,10 +378,10 @@
                 >Cancelar</v-btn>
 
                 <v-btn
-                  class="mx-0 font-weight-light"
                   :color="enviarBtn.color"
+                  class="mx-0 font-weight-light"
                   @click="updateEvent"
-                >{{enviarBtn.text}}</v-btn>
+                >{{ enviarBtn.text }}</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -383,7 +396,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Event',
 
-  data() {
+  data () {
     return {
       event: this.$store.getters.getEventById(this.$route.params.id),
       menuEndTime: null,
@@ -404,20 +417,20 @@ export default {
       }
     }
   },
-  watch: {
-    eventState() {
-      this.event = this.eventState
-    }
-  },
   computed: {
-    maxTimeC() {
+    areaScope () {
+      return this.$store.getters.getAreaScope.map(area => {
+        return area.title
+      })
+    },
+    maxTimeC () {
       if (this.minTimeC) {
         return '24:30'
       } else {
         return undefined
       }
     },
-    minTimeC() {
+    minTimeC () {
       if (this.event.eventDateC && this.event.eventDate) {
         const [yearC, monthC, dayC] = this.event.eventDateC.split('-')
         const [year, month, day] = this.event.eventDate.split('-')
@@ -429,12 +442,12 @@ export default {
         return undefined
       }
     },
-    minDateC() {
+    minDateC () {
       return this.event.eventDate
         ? this.event.eventDate
         : new Date().toISOString().substr(0, 10)
     },
-    enviarBtn() {
+    enviarBtn () {
       if (this.showErrorDate || this.showErrorTime) {
         return {
           text: 'Datos invalidos',
@@ -448,54 +461,56 @@ export default {
       }
     },
     endTimeFormatted: {
-      get: function() {
+      get: function () {
         return this.formatEndTime(this.event.endTime)
       },
-      set: function(val) {
+      set: function (val) {
         this.event.endTime = val
       }
     },
-    eventState: function() {
-      const stateEvent = this.$store.state.events.filter(event => {
-        if (event._id === this.$route.params.id) {
-        }
-        return event._id === this.$route.params.id
-      })
-      const eventToreturn = stateEvent[0]
-
-      return {
-        ...eventToreturn,
-        eventDate: new Date(eventToreturn.eventDate)
-          .toLocaleString(['es-VE'], {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          })
-          .split('/')
-          .reverse()
-          .join('-'),
-        eventTime: new Date(eventToreturn.eventDate).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }),
-        endDate: new Date(eventToreturn.endDate)
-          .toLocaleString(['es-VE'], {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          })
-          .split('/')
-          .reverse()
-          .join('-'),
-        eventTimeC: new Date(eventToreturn.endDate).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
+    eventState: function () {
+      if (this.$store.state.events.length > 0) {
+        const stateEvent = this.$store.state.events.filter(event => {
+          if (event._id === this.$route.params.id) {
+          }
+          return event._id === this.$route.params.id
         })
+        const eventToreturn = stateEvent[0]
+
+        return {
+          ...eventToreturn,
+          eventDate: new Date(eventToreturn.eventDate)
+            .toLocaleString(['es-VE'], {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+            .split('/')
+            .reverse()
+            .join('-'),
+          eventTime: new Date(eventToreturn.eventDate).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }),
+          endDate: new Date(eventToreturn.endDate)
+            .toLocaleString(['es-VE'], {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+            .split('/')
+            .reverse()
+            .join('-'),
+          eventTimeC: new Date(eventToreturn.endDate).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          })
+        }
       }
     },
-    eventDateToDB() {
+    eventDateToDB () {
       const [year, month, day] = this.event.eventDate.split('-')
       const [hour, min] = this.event.eventTime.split(':')
       const formattedDate = new Date(
@@ -508,7 +523,20 @@ export default {
 
       return formattedDate
     },
-    maxDate() {
+    endDateToDB () {
+      const [year, month, day] = this.event.endDate.split('-')
+      const [hour, min] = this.event.eventTimeC.split(':')
+      const formattedDate = new Date(
+        year,
+        month - 1,
+        day,
+        hour,
+        min
+      ).toISOString()
+
+      return formattedDate
+    },
+    maxDate () {
       const nowDate = new Date()
       const nowYear = nowDate.getFullYear()
       const nowMonth = nowDate.getMonth()
@@ -517,29 +545,35 @@ export default {
       return new Date(nowYear + 1, nowMonth, nowDay).toISOString().substr(0, 10)
     },
     isloading: {
-      get: function() {
+      get: function () {
         return this.$store.getters.getIsloading
       },
-      set: function(payload) {
+      set: function (payload) {
         this.$store.dispatch('setLoading', payload)
       }
     }
   },
+  watch: {
+    eventState () {
+      if (this.eventState) this.event = this.eventState
+    }
+  },
+  created () {},
 
   methods: {
-    resetTime() {
+    resetTime () {
       this.event.eventTime = ''
     },
-    setLocalStoreEventData(eventData) {
+    setLocalStoreEventData (eventData) {
       localStorage.setItem('newEventFormData', JSON.stringify(eventData))
     },
-    isEmpty(obj) {
+    isEmpty (obj) {
       for (var key in obj) {
         if (obj.hasOwnProperty(key)) return false
       }
       return true
     },
-    formatEndTime(endTime) {
+    formatEndTime (endTime) {
       if (!endTime) return null
       const hour = endTime.split(':')[0]
       const min = endTime.split(':')[1]
@@ -550,32 +584,32 @@ export default {
         return hour + ':' + min + ' am'
       }
     },
-    formatDate(date) {
+    formatDate (date) {
       const [year, moth, day] = new Date(date)
         .toISOString()
         .substr(0, 10)
         .split('-')
     },
-    resetDate() {
+    resetDate () {
       this.event.eventDate = ''
       this.resetDateC()
       this.resetTimeC()
     },
-    resetDateC() {
+    resetDateC () {
       if (this.event.eventDateC) this.event.eventDateC = ''
     },
-    resetTimeC() {
+    resetTimeC () {
       if (this.event.eventTimeC) this.event.eventTimeC = ''
     },
-    resetTime() {
+    resetTime () {
       this.resetTimeC()
       this.event.eventTime = ''
     },
-    resetForm() {
+    resetForm () {
       this.event = this.$store.getters.getEventById(this.$route.params.id)
     },
 
-    updateEvent() {
+    updateEvent () {
       this.isloading = true
 
       const query = {
@@ -586,10 +620,11 @@ export default {
                 eventInput:{
                     title: "${this.event.title}",
                     eventDate:"${this.eventDateToDB}",
-                    endTime: "${this.event.endTime}",
+                    endDate: "${this.endDateToDB}",
                     place: "${this.event.place}",
                     description: "${this.event.description}",
                     cordinator: "${this.event.cordinator}",
+                    orgScope: "${this.event.orgScope}",
                     staffAuv:${JSON.stringify(this.event.staffAuv)},
                     staffMav:${JSON.stringify(this.event.staffMav)},
                     staffProto:${JSON.stringify(this.event.staffProto)},
@@ -605,7 +640,7 @@ export default {
       }
 
       axios
-        .post('/api/', query, {
+        .post(process.env.VUE_APP_API_ENDPOINT, query, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + this.$store.state.auth.token
@@ -638,8 +673,7 @@ export default {
           })
         })
     }
-  },
-  created() {}
+  }
 }
 </script>
 <style lang="scss">

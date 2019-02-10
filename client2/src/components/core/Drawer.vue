@@ -51,8 +51,8 @@
         </v-list-tile>
         <v-list-tile
           v-if="getUserRole > 4"
-          to="/users"
           :active-class="color"
+          to="/users"
           avatar
           class="v-list-item"
         >
@@ -97,28 +97,28 @@ export default {
     ...mapState('app', ['image', 'color']),
 
     inputValue: {
-      get() {
+      get () {
         return this.$store.state.app.drawer
       },
-      set(val) {
+      set (val) {
         this.setDrawer(val)
       }
     },
-    items() {
+    items () {
       return this.$t('Layout.View.items')
     },
     ...mapGetters(['isAuth', 'getUserRole'])
   },
-  mounted() {
+  mounted () {
     this.onResponsiveInverted()
     window.addEventListener('resize', this.onResponsiveInverted)
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.onResponsiveInverted)
   },
   methods: {
     ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
-    onResponsiveInverted() {
+    onResponsiveInverted () {
       if (window.innerWidth < 991) {
         this.responsive = true
       } else {
@@ -126,7 +126,7 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     console.log(this.$store.state.auth.role)
   }
 }

@@ -1,11 +1,11 @@
 <template>
   <v-snackbar
-    @input="resetAlert"
     v-model="alertData.active"
-    multi-line
     :timeout="timeout"
-    top
     :color="alertData.class"
+    multi-line
+    top
+    @input="resetAlert"
   >
     {{ alertData.msg }}
     <v-btn
@@ -19,26 +19,26 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       timeout: 6000
-    };
+    }
   },
   computed: {
     alertData: {
-      get: function() {
-        return this.$store.getters.getAlert;
+      get: function () {
+        return this.$store.getters.getAlert
       }
     }
   },
   methods: {
-    resetAlert() {
-      this.$store.commit("setAlert", {
+    resetAlert () {
+      this.$store.commit('setAlert', {
         active: false,
-        class: "",
-        msg: ""
-      });
+        class: '',
+        msg: ''
+      })
     }
   }
-};
+}
 </script>

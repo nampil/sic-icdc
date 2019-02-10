@@ -11,7 +11,7 @@
       <v-card-title class="headline">Su sesion esta a punto de expirar</v-card-title>
       <v-card-text>Para continuar con la sesion, presione continuar. De lo contrario, puede cancelar para salir inmediatamente</v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer/>
         <v-btn
           color="tertiary"
           @click="loginAlert = false"
@@ -26,25 +26,25 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       timeout: 6000
-    };
+    }
   },
   computed: {
     loginAlert: {
-      get: function() {
-        return this.$store.getters.getLoginAlert;
+      get: function () {
+        return this.$store.getters.getLoginAlert
       },
-      set: function(payload) {
-        this.$store.commit("loginAlert", payload);
+      set: function (payload) {
+        this.$store.commit('loginAlert', payload)
       }
     }
   },
   methods: {
-    continuar() {
-      this.$store.dispatch("relogin");
+    continuar () {
+      this.$store.dispatch('relogin')
     }
   }
-};
+}
 </script>

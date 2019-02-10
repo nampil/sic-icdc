@@ -13,41 +13,41 @@
         >
           <v-form
             ref="form"
-            v-on:submit.prevent="submit"
+            @submit.prevent="submit"
           >
             <v-alert
               :value="hasErr"
               type="error"
               transition="scale-transition"
             >
-              {{errMsg}}
+              {{ errMsg }}
             </v-alert>
 
             <v-text-field
-              prepend-icon="mdi-account"
               v-model="usuario"
+              :rules="[rules.required]"
+              prepend-icon="mdi-account"
               required
               label="Usuario"
-              :rules="[rules.required]"
-            ></v-text-field>
+            />
             <v-text-field
-              prepend-icon="mdi-email"
               v-model="email"
+              :rules="[rules.required]"
+              prepend-icon="mdi-email"
               required
               label="Email"
-              :rules="[rules.required]"
               type="email"
-            ></v-text-field>
+            />
             <v-text-field
-              prepend-icon="mdi-key"
               :append-icon="show1 ? 'mdi-eye-off' : 'mdi-eye'"
               v-model="password"
+              :type="show1 ? 'text' : 'password'"
+              :rules="[rules.required]"
+              prepend-icon="mdi-key"
               required
               label="Clave"
-              :type="show1 ? 'text' : 'password'"
               @click:append="show1 = !show1"
-              :rules="[rules.required]"
-            ></v-text-field>
+            />
             <v-btn
               color="primary"
               class="ma-2"
@@ -66,50 +66,50 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import axios from 'axios'
 
 export default {
-  name: "register",
-  data() {
+  name: 'Register',
+  data () {
     return {
-      email: "",
-      usuario: "",
-      password: "",
+      email: '',
+      usuario: '',
+      password: '',
       show1: false,
       rules: {
-        required: value => !!value || "Necesario."
+        required: value => !!value || 'Necesario.'
       },
-      errMsg: "",
+      errMsg: '',
       hasErr: false
-    };
+    }
   },
   computed: {
-    credentials() {
+    credentials () {
       const authQuery = {
         query: `
                 mutation {
                     createUser(userInput: {name: "${this.usuario}", email: "${
-          this.email
-        }", password: "${this.password}"}){
+  this.email
+}", password: "${this.password}"}){
                         _id
                         email
                     }
                 }
             `
-      };
-      return authQuery;
+      }
+      return authQuery
     }
   },
   methods: {
-    clearForm() {
-      this.usuario = "";
-      this.email = "";
-      this.password = "";
-      this.hasErr = false;
-      this.errMsg = "";
-      this.$refs.form.reset();
+    clearForm () {
+      this.usuario = ''
+      this.email = ''
+      this.password = ''
+      this.hasErr = false
+      this.errMsg = ''
+      this.$refs.form.reset()
     },
-    submit() {
+    submit () {
       if (
         !this.usuario ||
         !this.email ||
@@ -118,23 +118,23 @@ export default {
         this.password.trim().legth === 0 ||
         this.email.trim().legth === 0
       ) {
-        this.hasErr = true;
-        this.errMsg = "Todos los campos son requeridos";
+        this.hasErr = true
+        this.errMsg = 'Todos los campos son requeridos'
       } else {
         axios
-          .post("/api/", this.credentials, {
-            headers: { "Content-Type": "application/json" }
+          .post(process.env.VUE_APP_API_ENDPOINT, this.credentials, {
+            headers: { 'Content-Type': 'application/json' }
           })
           .then(res => {
             if (res.status !== 200 && res.status !== 2001) {
-              throw new Error("Failed!");
+              throw new Error('Failed!')
             }
-            console.log(res.data.data.createUser.email);
+            console.log(res.data.data.createUser.email)
           })
-          .catch(err => console.log(err));
-        this.clearForm();
+          .catch(err => console.log(err))
+        this.clearForm()
       }
     }
   }
-};
+}
 </script>

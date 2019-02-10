@@ -10,26 +10,26 @@
         color="primary"
       >
         <v-layout
+          slot="header"
           align-center
           justify-space-between
           row
           fill-height
-          slot="header"
         >
           <div>
-            <div class="title">{{member.name}}</div>
-            <div class="font-weight-light mb-2">Tel: {{member.tel}}</div>
+            <div class="title">{{ member.name }}</div>
+            <div class="font-weight-light mb-2">Tel: {{ member.tel }}</div>
           </div>
 
           <v-btn
             v-if="!edit"
-            @click="edit = !edit"
             color="info"
+            @click="edit = !edit"
           >Editar</v-btn>
           <v-btn
             v-else
-            @click="(edit = !edit), resetForm()"
             color="tertiary"
+            @click="(edit = !edit), resetForm()"
           >Cancelar</v-btn>
         </v-layout>
         <v-form>
@@ -52,12 +52,12 @@
                   class="text-xs-center"
                 >
                   <v-progress-circular
-                    class="progress"
                     :size="70"
                     :width="7"
+                    class="progress"
                     color="purple"
                     indeterminate
-                  ></v-progress-circular>
+                  />
                 </v-flex>
               </v-layout>
             </div>
@@ -65,12 +65,12 @@
             <v-layout wrap>
               <v-flex xs12>
                 <v-text-field
-                  class="purple-input"
-                  label="Nombre"
                   v-model="member.name"
                   :rules="rulesName"
-                  prepend-inner-icon="mdi-account-outline"
                   :readonly="!edit"
+                  class="purple-input"
+                  label="Nombre"
+                  prepend-inner-icon="mdi-account-outline"
                 />
               </v-flex>
               <v-flex
@@ -91,23 +91,23 @@
                   min-width="290px"
                 >
                   <v-text-field
-                    v-model="computedDateFormatted"
                     slot="activator"
+                    v-model="computedDateFormatted"
                     label="Fecha de Nacimiento"
                     readonly
                     prepend-icon="mdi-calendar-star"
-                  ></v-text-field>
+                  />
 
                   <v-date-picker
                     v-show="edit"
-                    class="datePicker"
-                    locale="ES-ve"
                     ref="picker"
                     :max="new Date().toISOString().substr(0, 10)"
-                    min="1950-01-01"
                     v-model="member.bdate"
+                    class="datePicker"
+                    locale="ES-ve"
+                    min="1950-01-01"
                   >
-                    <v-spacer></v-spacer>
+                    <v-spacer/>
                     <v-btn
                       flat
                       color="primary"
@@ -127,9 +127,9 @@
                 md2
               >
                 <v-text-field
+                  :value="memAge"
                   label="Edad"
                   class="purple-input"
-                  :value="memAge"
                   readonly
                   prepend-inner-icon="mdi-counter"
                 />
@@ -139,12 +139,12 @@
                 md4
               >
                 <v-select
-                  class="purple-input"
-                  label="Genero"
                   v-model="member.gender"
                   :items="gender"
-                  prepend-inner-icon="mdi-gender-male-female"
                   :readonly="!edit"
+                  class="purple-input"
+                  label="Genero"
+                  prepend-inner-icon="mdi-gender-male-female"
                 />
               </v-flex>
 
@@ -153,12 +153,12 @@
                 md6
               >
                 <v-text-field
+                  v-model="member.tel"
+                  :readonly="!edit"
                   label="Teléfono"
                   class="purple-input"
-                  v-model="member.tel"
                   mask="(####) ###-####"
                   prepend-inner-icon="mdi-cellphone-iphone"
-                  :readonly="!edit"
                 />
               </v-flex>
               <v-flex
@@ -166,12 +166,12 @@
                 md6
               >
                 <v-text-field
+                  v-model="member.email"
+                  :readonly="!edit"
                   label="Email"
                   class="purple-input"
                   type="email"
-                  v-model="member.email"
                   prepend-inner-icon="mdi-email"
-                  :readonly="!edit"
                 />
               </v-flex>
 
@@ -180,11 +180,11 @@
                 md12
               >
                 <v-text-field
+                  v-model="member.address"
+                  :readonly="!edit"
                   label="Dirección"
                   class="purple-input"
-                  v-model="member.address"
                   prepend-inner-icon="mdi-home-map-marker"
-                  :readonly="!edit"
                 />
               </v-flex>
 
@@ -200,7 +200,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-human-handsdown"
-                ></v-combobox>
+                />
               </v-flex>
               <v-flex
                 xs12
@@ -214,7 +214,7 @@
                   multiple
                   small-chips
                   prepend-inner-icon="mdi-room-service"
-                ></v-combobox>
+                />
               </v-flex>
               <v-flex
                 xs12
@@ -249,7 +249,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Member',
 
-  data() {
+  data () {
     return {
       edit: false,
       rulesName: [v => !!v || 'Se requiere nombre'],
@@ -257,7 +257,7 @@ export default {
       telRules: [],
       gender: ['f', 'm'],
       member: this.$store.getters.getMemberById(this.$route.params.id),
-      //date: new Date().toISOString().substr(0, 10),
+      // date: new Date().toISOString().substr(0, 10),
       dateFormatted: null,
       menu1: false,
       areasServicio: [
@@ -277,17 +277,17 @@ export default {
     }
   },
   computed: {
-    stateMember: function() {
+    stateMember: function () {
       return this.$store.getters.getMemberById(this.$route.params.id)
     },
-    tel: function() {
+    tel: function () {
       if (this.member && this.member.tel !== 'undefined') {
         return this.member.tel
       } else {
         return ''
       }
     },
-    email() {
+    email () {
       if (this.member) {
         return this.member.email
       } else {
@@ -295,30 +295,30 @@ export default {
       }
     },
     isloading: {
-      get: function() {
+      get: function () {
         return this.$store.getters.getIsloading
       },
-      set: function(payload) {
+      set: function (payload) {
         this.$store.dispatch('setLoading', payload)
       }
     },
-    computedDateFormatted() {
+    computedDateFormatted () {
       return this.formatDate(this.member.bdate)
     },
-    memAge() {
+    memAge () {
       const memberAge =
         Math.abs(Date.now() - new Date(this.member.bdate)) / 31557600000
       return Math.floor(memberAge)
     }
   },
   watch: {
-    stateMember: function() {
+    stateMember: function () {
       this.member = this.stateMember
     },
-    menu1(val) {
+    menu1 (val) {
       val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
     },
-    tel: function(val) {
+    tel: function (val) {
       if (val && val !== '') {
         this.telRules = [
           v =>
@@ -328,7 +328,7 @@ export default {
         this.telRules = []
       }
     },
-    email(val) {
+    email (val) {
       if (val && val !== '') {
         this.emailRules = [
           v =>
@@ -341,29 +341,30 @@ export default {
       }
     }
   },
+  created () {},
   methods: {
-    resetForm() {
+    resetForm () {
       this.member = this.$store.getters.getMemberById(this.$route.params.id)
     },
-    resetBdate() {
+    resetBdate () {
       this.menu1 = false
       this.member.bdate = this.$store.getters.getMemberById(
         this.$route.params.id
       ).bdate
     },
-    formatDate(date) {
+    formatDate (date) {
       if (!date) return null
 
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-    parseDate(date) {
+    parseDate (date) {
       if (!date) return null
 
       const [month, day, year] = date.split('/')
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
     },
-    updateMember() {
+    updateMember () {
       this.isloading = true
       console.log(JSON.stringify(this.member.relatives))
       const query = {
@@ -388,7 +389,7 @@ export default {
       }
 
       axios
-        .post('/api/', query, {
+        .post(process.env.VUE_APP_API_ENDPOINT, query, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + this.$store.state.auth.token
@@ -411,8 +412,7 @@ export default {
         })
         .catch(err => console.log(err))
     }
-  },
-  created() {}
+  }
 }
 </script>
 <style lang="scss" scoped>

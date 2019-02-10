@@ -6,7 +6,7 @@
     style="background: #eee;"
   >
     <div class="v-toolbar-title">
-      <v-toolbar-title class="tertiary--text font-weight-light">
+      <v-toolbar-title class="tertiary--text font-weight-light truncate">
         <v-btn
           v-if="responsive"
           class="default v-btn--simple"
@@ -27,35 +27,31 @@
         layout
         py-2
       >
-        <v-fade-transition mode="out-in">
-          <router-link
-            v-if="isAuthPresent"
-            v-ripple
-            class="toolbar-items"
-            to="/members/newmember"
-          >
-            <v-icon color="tertiary">mdi-account-plus</v-icon>
-          </router-link>
-        </v-fade-transition>
-        <v-fade-transition mode="out-in">
-          <router-link
-            v-if="isAuthPresent"
-            v-ripple
-            class="toolbar-items"
-            to="/events/newevent"
-          >
-            <v-icon color="tertiary">mdi-calendar-plus</v-icon>
-          </router-link>
-        </v-fade-transition>
-        <v-fade-transition>
-          <router-link
-            v-ripple
-            class="toolbar-items"
-            to="/"
-          >
-            <v-icon color="tertiary">mdi-view-dashboard</v-icon>
-          </router-link>
-        </v-fade-transition>
+        <router-link
+          v-ripple
+          v-if="isAuthPresent"
+          class="toolbar-items"
+          to="/members/newmember"
+        >
+          <v-icon color="tertiary">mdi-account-plus</v-icon>
+        </router-link>
+
+        <router-link
+          v-ripple
+          v-if="isAuthPresent"
+          class="toolbar-items"
+          to="/events/newevent"
+        >
+          <v-icon color="tertiary">mdi-calendar-plus</v-icon>
+        </router-link>
+
+        <router-link
+          v-ripple
+          class="toolbar-items"
+          to="/"
+        >
+          <v-icon color="tertiary">mdi-view-dashboard</v-icon>
+        </router-link>
 
         <v-menu
           v-if="isAuthPresent"
@@ -66,9 +62,9 @@
           transition="slide-y-transition"
         >
           <v-btn
-            flat
             v-ripple
             slot="activator"
+            flat
             class="toolbar-items"
             icon
           >
@@ -100,34 +96,34 @@ export default {
     responsiveInput: false
   }),
   computed: {
-    isAuthPresent() {
+    isAuthPresent () {
       return this.$store.getters.isAuth
     }
   },
 
   watch: {
-    $route(val) {
+    $route (val) {
       this.title = val.name
     }
   },
 
-  mounted() {
+  mounted () {
     this.onResponsiveInverted()
     window.addEventListener('resize', this.onResponsiveInverted)
   },
-  beforeDestroy() {
+  beforeDestroy () {
     window.removeEventListener('resize', this.onResponsiveInverted)
   },
 
   methods: {
     ...mapMutations('app', ['setDrawer', 'toggleDrawer']),
-    onClickBtn() {
+    onClickBtn () {
       this.setDrawer(!this.$store.state.app.drawer)
     },
-    onClick() {
+    onClick () {
       //
     },
-    onResponsiveInverted() {
+    onResponsiveInverted () {
       if (window.innerWidth < 991) {
         this.responsive = true
         this.responsiveInput = false
@@ -136,7 +132,7 @@ export default {
         this.responsiveInput = true
       }
     },
-    logout() {
+    logout () {
       this.$store.dispatch('logout')
       this.$router.push('/login')
     }
@@ -147,5 +143,12 @@ export default {
 <style>
 #core-toolbar a {
   text-decoration: none;
+}
+
+.truncate {
+  width: 190px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

@@ -54,6 +54,7 @@ type Event {
     eventDate: String!
     endDate: String!
     place: String!
+    orgScope: String!
     description: String
     cordinator: String
     memberAsist: [Member!]
@@ -75,6 +76,7 @@ input EventInput {
     eventDate: String!
     endDate: String!
     place: String!
+    orgScope: String!
     description: String
     cordinator: String
     staffAuv:[String]

@@ -10,13 +10,13 @@
 
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 export default {
-  name: "TotalFemale",
+  name: 'TotalFemale',
   computed: {
     ...mapGetters({
-      femaleMembersCount: "getMembersFemaleCount"
+      femaleMembersCount: 'getMembersFemaleCount'
     })
   }
-};
+}
 </script>

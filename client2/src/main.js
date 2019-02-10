@@ -19,10 +19,18 @@ import i18n from '@/i18n'
 import router from '@/router'
 import store from '@/store'
 
-//Other imports
+// Other imports
 
 import VCalendar from 'v-calendar'
 import 'v-calendar/lib/v-calendar.min.css'
+
+const prod = process.env.NODE_ENV === 'production'
+const shouldSW = 'serviceWorker' in navigator && prod
+if (shouldSW) {
+  navigator.serviceWorker.register('./service-worker.js').then(() => {
+    console.log('Service Worker Registered!')
+  })
+}
 // Sync store with router
 sync(store, router)
 
@@ -30,23 +38,25 @@ Vue.config.productionTip = false
 
 Vue.use(VCalendar, {
   firstDayOfWeek: 1, // Sunday
-  componentPrefix: "n"
-});
+  componentPrefix: 'n',
+  locale: 'es-VE',
+  popoverExpanded: true,
+  showLinkedButtons: true
+})
 
 /* eslint-disable no-new */
 new Vue({
   i18n,
   router,
   store,
-  mounted() {
+  mounted () {
     if (this.$store.state.auth.token) {
       this.$store.dispatch('relogin')
     }
   },
-  render: h => h(App),
-  created() {
+  created () {
 
-
-  }
+  },
+  render: h => h(App)
 
 }).$mount('#app')
