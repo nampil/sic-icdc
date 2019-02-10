@@ -5,11 +5,11 @@ import router from '../router'
 let timeToLogout
 let timeToLoginAlert
 
-function StopTime (id) {
+function StopTime(id) {
   clearTimeout(id)
 }
 export default {
-  fetchGuests ({
+  fetchGuests({
     commit,
     state
   }) {
@@ -55,7 +55,7 @@ export default {
         })
     })
   },
-  fetchUsers ({
+  fetchUsers({
     commit,
     state
   }) {
@@ -89,7 +89,7 @@ export default {
     })
   },
 
-  fetchMembers ({
+  fetchMembers({
     commit,
     state
   }) {
@@ -143,7 +143,7 @@ export default {
     })
   },
 
-  fetchEvents ({
+  fetchEvents({
     commit,
     state
   }) {
@@ -207,7 +207,7 @@ export default {
     })
   },
 
-  login ({
+  login({
     commit
   }, credentials) {
     return new Promise((resolve, reject) => {
@@ -236,18 +236,18 @@ export default {
         })
     })
   },
-  logout ({
+  logout({
     commit
   }) {
     localStorage.clear()
     commit('destroyAuth')
   },
-  setLoading ({
+  setLoading({
     commit
   }, payload) {
     commit('loading', payload)
   },
-  toggleAlert ({
+  toggleAlert({
     commit
   }, args) {
     commit('setAlert', args)
@@ -268,7 +268,7 @@ export default {
       commit('loginAlert', true)
     }, 1000 * 60 * 58)
   },
-  relogin ({
+  relogin({
     commit,
     state,
     dispatch
@@ -322,12 +322,15 @@ export default {
     state
   }, id) => {
     const query = {
-      query: `mutation {
-        deleteUser(userId: "${id}"){
+      query: `mutation DeleteUser($id: ID!){
+        deleteUser(userId: $id){
           _id
           name
         }
-      }`
+      }`,
+      variables: {
+        id: id
+      }
     }
     const headers = {
       headers: {
@@ -350,12 +353,15 @@ export default {
     state
   }, id) => {
     const query = {
-      query: `mutation {
-        deleteMember(memberId: "${id}"){
+      query: `mutation DeleteMember($id: ID!) {
+        deleteMember(memberId: $id){
           _id
           name
         }
-      }`
+      }`,
+      variables: {
+        id: id
+      }
     }
     const headers = {
       headers: {
@@ -373,19 +379,19 @@ export default {
         })
     })
   },
-  createUser ({
+  createUser({
     state,
     dispatch
   }, newUser) {
     const query = {
       query: `
-        mutation{
+        mutation CreateUser($name: String!, $password: String!, $email: String!, $role: Int){
           createUser(
             userInput: {
-              name: "${newUser.name}",
-              password: "${newUser.password}",
-              email: "${newUser.email}",
-              role: ${newUser.role}
+              name: $name,
+              password: $password,
+              email: $email,
+              role: $role
             })
             {
               _id
@@ -393,7 +399,13 @@ export default {
               email
               role
             }
-        }`
+        }`,
+      variables: {
+        name: newUser.name,
+        password: newUser.password,
+        email: newUser.email,
+        role: newUser.role
+      }
     }
 
     const headers = {
@@ -417,7 +429,7 @@ export default {
     })
   },
 
-  createMember ({
+  createMember({
     dispatch,
     state
   }, member) {
@@ -462,7 +474,7 @@ export default {
         })
     })
   },
-  createEvent ({
+  createEvent({
     dispatch,
     state
   }, event) {
@@ -543,7 +555,7 @@ export default {
         })
     })
   },
-  createGuest ({
+  createGuest({
     commit,
     state
   }, guest) {
@@ -573,7 +585,7 @@ export default {
     })
   },
 
-  async loadData ({
+  async loadData({
     commit,
     dispatch,
     state

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../model/user')
 const {
+    events,
     members,
     transformUser
 } = require('../resolvers/merge')
@@ -25,7 +26,8 @@ module.exports = {
             return {
                 ...user._doc,
                 _id: user.id,
-                createdMembers: members.bind(this, user._doc.createdMembers)
+                createdMembers: members.bind(this, user._doc.createdMembers),
+                createdEvents: events.bind(this, user._doc.createdEvents)
             }
 
         } catch (err) {
@@ -43,7 +45,8 @@ module.exports = {
                 return {
                     ...user._doc,
                     _id: user.id,
-                    createdMembers: members.bind(this, user._doc.createdMembers)
+                    createdMembers: members.bind(this, user._doc.createdMembers),
+                    createdEvents: events.bind(this, user._doc.createdEvents)
                 }
             })
 

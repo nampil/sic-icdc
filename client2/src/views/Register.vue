@@ -19,9 +19,7 @@
               :value="hasErr"
               type="error"
               transition="scale-transition"
-            >
-              {{ errMsg }}
-            </v-alert>
+            >{{ errMsg }}</v-alert>
 
             <v-text-field
               v-model="usuario"
@@ -60,7 +58,6 @@
             >Cancelar</v-btn>
           </v-form>
         </material-card>
-
       </v-flex>
     </v-layout>
   </div>
@@ -70,7 +67,7 @@ import axios from 'axios'
 
 export default {
   name: 'Register',
-  data () {
+  data() {
     return {
       email: '',
       usuario: '',
@@ -84,24 +81,27 @@ export default {
     }
   },
   computed: {
-    credentials () {
+    credentials() {
       const authQuery = {
         query: `
-                mutation {
-                    createUser(userInput: {name: "${this.usuario}", email: "${
-  this.email
-}", password: "${this.password}"}){
+                mutation Register($name: String!, $email: String!, $password: String!){
+                    createUser(userInput: {name: $name, email: $email, password: $password}){
                         _id
                         email
                     }
                 }
-            `
+            `,
+        variables: {
+          name: this.usuario,
+          email: this.email,
+          password: this.password
+        }
       }
       return authQuery
     }
   },
   methods: {
-    clearForm () {
+    clearForm() {
       this.usuario = ''
       this.email = ''
       this.password = ''
@@ -109,7 +109,7 @@ export default {
       this.errMsg = ''
       this.$refs.form.reset()
     },
-    submit () {
+    submit() {
       if (
         !this.usuario ||
         !this.email ||

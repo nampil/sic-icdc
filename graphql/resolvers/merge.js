@@ -1,5 +1,5 @@
 const DataLoader = require('dataloader')
-
+const Event = require('../../model/event')
 const Member = require('../../model/member');
 const User = require('../../model/user');
 const {
@@ -8,8 +8,20 @@ const {
 
 
 const eventLoader = new DataLoader((eventsIds) => {
-    console.log
+
     return events(eventsIds);
+});
+
+const memberLoader = new DataLoader((memberIds) => {
+    return members(memberIds);
+});
+
+const userLoader = new DataLoader(UserIds => {
+    return User.find({
+        _id: {
+            $in: UserIds
+        }
+    });
 });
 
 
@@ -28,9 +40,9 @@ const events = async eventIds => {
     }
 };
 
-const singleEvent = async eventId => {
+const singleEvent = async eventIds => {
     try {
-        const event = await eventLoader(eventId);
+        const event = await eventLoader.load(eventIds.toString());
         return event
     } catch (err) {
         throw err;
@@ -55,13 +67,14 @@ const members = async membersIds => {
 
 
 const user = async (userId) => {
-    const user = await User.findById(userId)
+    const user = await userLoader.load(userId.toString())
 
     try {
         return {
             ...user._doc,
             _id: user.id,
-            createdMembers: members.bind(this, user.createdMembers)
+            createdMembers: () => memberLoader.loadMany(user.createdMembers),
+            createdEvents: () => memberLoader.loadMany(user.createdEvents)
         };
     } catch (err) {
         throw err;
@@ -105,7 +118,7 @@ const transformGuest = guest => {
     };
 };
 
-//exports.user = user;
+exports.events = events;
 exports.members = members;
 exports.transformMember = transformMember;
 exports.transformEvent = transformEvent;

@@ -60,7 +60,7 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Login',
-  data () {
+  data() {
     return {
       usuario: '',
       password: '',
@@ -73,13 +73,11 @@ export default {
     }
   },
   computed: {
-    credentials () {
+    credentials() {
       const authQuery = {
         query: `
-                query {
-                    login(email: "${this.usuario}", password: "${
-  this.password
-}")
+                query Login($email: String!, $password: String!){
+                    login(email: $email, password: $password)
                     {
                         userId
                         token
@@ -88,20 +86,24 @@ export default {
                         role
                     }
                 }
-            `
+            `,
+        variables: {
+          email: this.usuario,
+          password: this.password
+        }
       }
       return authQuery
     }
   },
   methods: {
-    clearForm () {
+    clearForm() {
       this.usuario = ''
       this.password = ''
       this.hasErr = false
       this.errMsg = ''
       this.$refs.form.reset()
     },
-    submit () {
+    submit() {
       if (
         !this.usuario ||
         !this.password ||
