@@ -8,6 +8,9 @@ const graphQLResolvers = require('./graphql/resolvers/index');
 const isAuth = require('./middleware/is-auth');
 const app = express();
 const history = require('connect-history-api-fallback');
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').load();
+}
 
 
 app.use(bodyParser.json());
@@ -20,12 +23,13 @@ app.use('/graphql', graphalHttp({
     graphiql: true
 
 }));
+app.use(history());
 
 app.set('port', process.env.PORT || 5000)
 
 app.use(express.static(__dirname + '/public'));
 
-app.use(history());
+
 
 // mongoose.connect('mongodb://nampil:17abdi.sofi23@localhost:27017/icdcSicDb?retryWrites=true', {
 //         useNewUrlParser: true,
@@ -45,7 +49,7 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PA
         console.log('Connected to DB...');
         app.listen(app.get('port'))
     }).then(() => {
-        console.log(`Listening on port ${app.get('port')}`)
+        console.log(`Listening on port ${app.get('port')}` + process.env)
     })
     .catch(err => {
         console.log(err)
