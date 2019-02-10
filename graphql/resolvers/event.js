@@ -11,7 +11,7 @@ module.exports = {
             throw new Error(JSON.stringify(req));
         }
         try {
-            const events = await Event.find();
+            const events = await Event.find(args);
             return events.map(event => {
 
                 return transformEvent(event);

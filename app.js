@@ -24,6 +24,10 @@ app.set('port', process.env.PORT || 5000)
 
 app.use(express.static(__dirname + '/public'))
 
+app.use(history({
+    disableDotRule: true,
+    verbose: true
+}));
 
 // mongoose.connect('mongodb://nampil:17abdi.sofi23@localhost:27017/icdcSicDb?retryWrites=true', {
 //         useNewUrlParser: true,
