@@ -49,7 +49,7 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PA
         console.log('Connected to DB...');
         app.listen(app.get('port'))
     }).then(() => {
-        console.log(`Listening on port ${app.get('port')}` + process.env)
+        console.log(`Listening on port ${app.get('port')}`)
     })
     .catch(err => {
         console.log(err)
