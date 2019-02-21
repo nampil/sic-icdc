@@ -3,9 +3,9 @@ const {
 } = require('graphql-redis-subscriptions');
 const Redis = require('ioredis');
 const options = {
-    host: process.env.REDISCLOUD_URL,
-    password: process.env.REDISCLOUD_PASSWORD,
-    port: process.env.REDISCLOUD_PORT,
+    host: `${process.env.REDISCLOUD_URL}`,
+    password: `${process.env.REDISCLOUD_PASSWORD}`,
+    port: `${process.env.REDISCLOUD_PORT}`,
     retry_strategy: options => {
         // reconnect after
         return Math.max(options.attempt * 100, 3000);
