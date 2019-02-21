@@ -1,8 +1,9 @@
-const {
-    buildSchema
-} = require('graphql');
+const typeDefs = `
 
-module.exports = buildSchema(`
+type Subscription {
+    newEvent: Event
+}
+
 type Member {
     _id: ID!
     name: String!
@@ -148,8 +149,8 @@ type RootQuery {
     guests: [Guest!]!
     members:[Member!]!
     users: [User!]!
-    user(name: String, userId: String): User!
-    login(email: String!, password: String!): AuthData!
+    user(name: String, _id: String): User!
+    login(email: String!, password: String!): AuthData
     relogin:AuthData!
     events: [Event!]!
 }
@@ -168,7 +169,9 @@ type RootMutation {
     updateEvent(eventId: ID!, eventInput: EventInput): Event!
 }
 schema {
-    query: RootQuery
-    mutation: RootMutation
-}
-`);
+        query: RootQuery
+        mutation: RootMutation
+        subscription: Subscription
+    }
+`
+module.exports.typeDefs = typeDefs
