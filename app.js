@@ -3,6 +3,8 @@ const {
     ApolloServer
 } = require('apollo-server-express')
 const express = require('express')
+const cors = require('cors')
+const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const {
     typeDefs
@@ -14,25 +16,15 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load()
 }
 
-mongoose
-    .connect(
-        `mongodb+srv://${process.env.MONGO_USER}:${
-      process.env.MONGO_PASSWORD
-    }@ndev01-quhgy.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true`, {
-            useNewUrlParser: true
-        }
-    )
-    .then(() => {
-        console.log('Connected to DB...')
-    })
-    .catch(err => {
-        console.log(err)
-    })
-
 const app = express()
+app.use(history({
+    index: '/'
+}));
 app.use(express.static(__dirname + '/public'))
 app.use(isAuth)
-const PORT = process.env.PORT || 4000
+app.use(cors())
+app.use(bodyParser.json())
+
 const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -58,11 +50,28 @@ const server = new ApolloServer({
     },
     tracing: true
 })
-app.use(history())
+
 server.applyMiddleware({
     app
 })
 
+
+const PORT = process.env.PORT || 4000
+
+mongoose
+    .connect(
+        `mongodb+srv://${process.env.MONGO_USER}:${
+      process.env.MONGO_PASSWORD
+    }@ndev01-quhgy.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true`, {
+            useNewUrlParser: true
+        }
+    )
+    .then(() => {
+        console.log('Connected to DB...')
+    })
+    .catch(err => {
+        console.log(err)
+    })
 
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
