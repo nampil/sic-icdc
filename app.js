@@ -58,7 +58,7 @@ const server = new ApolloServer({
     },
     tracing: true
 })
-
+app.use(history())
 server.applyMiddleware({
     app
 })
@@ -66,7 +66,7 @@ server.applyMiddleware({
 
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
-app.use(history())
+
 
 httpServer.listen(PORT, () => {
     console.log(
