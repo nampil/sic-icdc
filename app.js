@@ -10,6 +10,9 @@ const {
 const resolvers = require('./graphql/resolvers')
 const isAuth = require('./middleware/is-auth')
 const history = require('connect-history-api-fallback')
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').load()
+}
 
 mongoose
     .connect(
@@ -29,7 +32,7 @@ mongoose
 const app = express()
 app.use(express.static(__dirname + '/public'))
 app.use(isAuth)
-const PORT = 4000
+const PORT = process.env.PORT || 4000
 const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -59,10 +62,11 @@ const server = new ApolloServer({
 server.applyMiddleware({
     app
 })
-app.use(history())
+
 
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
+app.use(history())
 
 httpServer.listen(PORT, () => {
     console.log(
