@@ -268,7 +268,7 @@ self.addEventListener("push", e => {
   console.log("Push Recieved...");
   self.registration.showNotification(data.title, {
     body: data.body,
-    icon: "http://admin-icdc.herokuapp.com/img/icdc-icon-144x144.png",
+    icon: "https://admin-icdc.herokuapp.com/img/icdc-icon-144x144.png",
     requireInteraction: true
   });
 });
