@@ -1,6 +1,7 @@
 const Event = require('../../model/event');
 const User = require('../../model/user');
-
+const Sub = require('../../model/sub')
+const webpush = require('web-push')
 const pubsub = require('../resolvers/pupsub');
 
 const NEW_EVENT = 'new_event_created'
@@ -76,7 +77,32 @@ module.exports = {
                     }
                 })
 
-                console.log(createdEvent)
+                const subs = await Sub.find()
+
+                subs.map(sub => {
+                    const payload = JSON.stringify({
+                        title: "Nuevo Evento en ICDC",
+                        body: `Avisa a Nohel por fa`
+                    });
+
+                    const subcription = {
+                        endpoint: sub.endpoint,
+                        expirationTime: sub.expirationTime,
+                        keys: {
+                            p256dh: sub.p256dhKey,
+                            auth: sub.authKey
+                        }
+                    }
+                    // Pass object into sendNotification
+                    webpush
+                        .sendNotification(subcription, payload)
+                        .catch(err => console.error(err));
+
+                })
+
+
+
+
 
 
                 return createdEvent;

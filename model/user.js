@@ -21,6 +21,10 @@ const userSchema = new Schema({
         required: true
 
     },
+    subs: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Sub'
+    }],
     createdMembers: [{
         type: Schema.Types.ObjectId,
         ref: 'Member'

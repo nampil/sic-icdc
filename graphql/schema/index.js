@@ -26,8 +26,17 @@ type User {
     email: String!
     password: String!
     role: Int!
+    subs: [Sub] 
     createdMembers: [Member!]
     createdEvents: [Event!]
+}
+
+type Sub {
+    _id: ID!
+    endpoint: String!
+    expirationTime: Int
+    p256dhKey: String
+    authKey: String
 }
 
 type AuthData{
@@ -145,7 +154,16 @@ input GuestInput{
     invitedBy: String
 }
 
+input NewSubInput{
+    endpoint: String!
+    expirationTime: Int
+    p256dhKey: String
+    authKey: String
+
+}
+
 type RootQuery {
+    subs: [Sub!]!
     guests: [Guest!]!
     members:[Member!]!
     users: [User!]!
@@ -155,6 +173,7 @@ type RootQuery {
     events: [Event!]!
 }
 type RootMutation {
+    createSub(newSubInput: NewSubInput): Sub
     createGuest(guestInput: GuestInput): Guest
     updateGuest(guestId: ID! guestInput: GuestInput): Guest!
     deleteGuest(guestId: ID!): Guest!

@@ -2,6 +2,7 @@ const DataLoader = require('dataloader')
 const Event = require('../../model/event')
 const Member = require('../../model/member');
 const User = require('../../model/user');
+const Sub = require('../../model/sub')
 const {
     dateToString
 } = require('../../helpers/date');
@@ -23,6 +24,14 @@ const userLoader = new DataLoader(UserIds => {
         }
     });
 });
+
+const subLoader = new DataLoader(subId => {
+    return Sub.find({
+        _id: {
+            $in: subId
+        }
+    })
+})
 
 
 const events = async eventIds => {
@@ -65,6 +74,23 @@ const members = async membersIds => {
     };
 };
 
+const subs = async subsIds => {
+
+    try {
+        const subs = await Sub.find({
+            _id: {
+                $in: subsIds
+            }
+        })
+        return subs.map(sub => {
+            return transformSub(sub)
+        })
+
+    } catch (error) {
+        throw error
+    }
+}
+
 
 const user = async (userId) => {
     const user = await userLoader.load(userId.toString())
@@ -74,12 +100,16 @@ const user = async (userId) => {
             ...user._doc,
             _id: user.id,
             createdMembers: () => memberLoader.loadMany(user.createdMembers),
-            createdEvents: () => memberLoader.loadMany(user.createdEvents)
+            createdEvents: () => memberLoader.loadMany(user.createdEvents),
+            subs: () => subLoader.loadMany(user.subs)
         };
     } catch (err) {
         throw err;
     }
 };
+
+
+
 
 const transformMember = member => {
 
@@ -118,9 +148,18 @@ const transformGuest = guest => {
     };
 };
 
+const transformSub = sub => {
+    return {
+        ...sub._doc,
+        _id: sub.id
+    }
+}
+
 exports.events = events;
 exports.members = members;
+exports.subs = subs;
 exports.transformMember = transformMember;
 exports.transformEvent = transformEvent;
 exports.transformGuest = transformGuest;
 exports.transformUser = transformUser;
+exports.transformSub = transformSub;
