@@ -24,11 +24,11 @@ const privateVapidKey = process.env.PRIVATE_VAPID_KEY
 
 const app = express()
 
-// app.use(history({
-//     index: '/'
-// }));
+app.use(history({
+    index: '/'
+}));
 app.use(express.static(__dirname + '/public'))
-//app.use(sslRedirect());
+app.use(sslRedirect());
 app.use(isAuth)
 app.use(cors())
 app.use(bodyParser.json())
