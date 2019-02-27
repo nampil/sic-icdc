@@ -17,20 +17,19 @@ const memberLoader = new DataLoader((memberIds) => {
     return members(memberIds);
 });
 
-const userLoader = new DataLoader(UserIds => {
-    return User.find({
+const userLoader = new DataLoader(userIds => {
+    const userToEval = User.find({
         _id: {
-            $in: UserIds
+            $in: userIds
         }
     });
+
+
+    return userToEval
 });
 
 const subLoader = new DataLoader(subId => {
-    return Sub.find({
-        _id: {
-            $in: subId
-        }
-    })
+    return sub(userIds)
 })
 
 
@@ -44,15 +43,6 @@ const events = async eventIds => {
         return events.map(event => {
             return transformEvent(event);
         });
-    } catch (err) {
-        throw err;
-    }
-};
-
-const singleEvent = async eventIds => {
-    try {
-        const event = await eventLoader.load(eventIds.toString());
-        return event
     } catch (err) {
         throw err;
     }
@@ -92,20 +82,21 @@ const subs = async subsIds => {
 }
 
 
-const user = async (userId) => {
-    const user = await userLoader.load(userId.toString())
+const user = async (userId, eventId) => {
 
     try {
+        const userToEval = await userLoader.load(userId.toString())
         return {
-            ...user._doc,
-            _id: user.id,
-            createdMembers: () => memberLoader.loadMany(user.createdMembers),
-            createdEvents: () => memberLoader.loadMany(user.createdEvents),
-            subs: () => subLoader.loadMany(user.subs)
+            ...userToEval._doc,
+            _id: userToEval.id,
+            createdMembers: () => memberLoader.loadMany(userToEval._doc.createdMembers),
+            createdEvents: () => eventLoader.loadMany(userToEval._doc.createdEvents),
         };
+
     } catch (err) {
         throw err;
     }
+
 };
 
 
@@ -128,14 +119,14 @@ const transformUser = user => {
     }
 };
 
-const transformEvent = event => {
+const transformEvent = async event => {
 
     return {
         ...event._doc,
         _id: event.id,
         endDate: dateToString(event._doc.endDate),
         eventDate: dateToString(event._doc.eventDate),
-        createdBy: user.bind(this, event.createdBy)
+        createdBy: user.bind(this, event._doc.createdBy)
     };
 };
 const transformGuest = guest => {

@@ -180,7 +180,8 @@ module.exports = {
             //     throw new Error('No Autorizado')
             // }
 
-            console.log('Creando Sub')
+
+
 
             try {
                 const user = await User.findOne({
@@ -190,6 +191,17 @@ module.exports = {
                 if (!user) {
                     throw new Error('No se encontró este usuario')
                 }
+
+                if (user.sub && user.sub !== '') {
+
+                    subToreturn = await Sub.findById(user.sub);
+
+                    return {
+                        ...subToreturn._doc,
+                        _id: subToreturn.id
+                    }
+                }
+
 
                 const subscription = new Sub({
                     endpoint: args.newSubInput.endpoint,
@@ -203,13 +215,12 @@ module.exports = {
 
                 const result = await subscription.save()
 
-                await User.findOneAndUpdate({
-                    _id: req.userId
-                }, {
-                    $push: {
-                        subs: subscription
-                    }
-                });
+                let userToAddSub = await User.findById(req.userId);
+
+                userToAddSub.sub = result
+                await userToAddSub.save()
+
+
 
                 return {
                     ...result._doc,

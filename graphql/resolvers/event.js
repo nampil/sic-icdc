@@ -20,7 +20,9 @@ module.exports = {
                 throw new Error(JSON.stringify(req));
             }
             try {
-                const events = await Event.find(args);
+                const events = await Event.find();
+
+
                 return events.map(event => {
 
                     return transformEvent(event);
@@ -56,11 +58,16 @@ module.exports = {
                 staffVar: args.eventInput.staffVar,
                 createdBy: req.userId,
             });
+
+
             let createdEvent;
             try {
                 const result = await event.save();
-                createdEvent = transformEvent(result);
+
+                createdEvent = await transformEvent(result);
+
                 const creator = await User.findById(req.userId);
+
 
                 if (!creator) {
                     throw new Error('User not found.');
@@ -68,42 +75,40 @@ module.exports = {
                 creator.createdEvents.push(event);
                 await creator.save()
 
+                console.log(createdEvent.title);
+
                 pubsub.publish(NEW_EVENT, {
                     newEvent: {
                         ...createdEvent,
                         createdBy: {
-                            _id: req.userId
+                            _id: creator._doc._id,
+                            name: creator._doc.name
                         }
                     }
                 })
 
-                const subs = await Sub.find()
+                // const subs = await Sub.find()
 
-                subs.map(sub => {
-                    const payload = JSON.stringify({
-                        title: "Nuevo Evento en ICDC",
-                        body: `Avisa a Nohel por fa`
-                    });
+                // subs.map(sub => {
+                //     const payload = JSON.stringify({
+                //         title: "Nuevo Evento en ICDC",
+                //         body: `Avisa a Nohel por fa`
+                //     });
 
-                    const subcription = {
-                        endpoint: sub.endpoint,
-                        expirationTime: sub.expirationTime,
-                        keys: {
-                            p256dh: sub.p256dhKey,
-                            auth: sub.authKey
-                        }
-                    }
-                    // Pass object into sendNotification
-                    webpush
-                        .sendNotification(subcription, payload)
-                        .catch(err => console.error(err));
+                //     const subcription = {
+                //         endpoint: sub.endpoint,
+                //         expirationTime: sub.expirationTime,
+                //         keys: {
+                //             p256dh: sub.p256dhKey,
+                //             auth: sub.authKey
+                //         }
+                //     }
+                //     // Pass object into sendNotification
+                //     webpush
+                //         .sendNotification(subcription, payload)
+                //         .catch(err => console.error(err));
 
-                })
-
-
-
-
-
+                // })
 
                 return createdEvent;
             } catch (err) {
@@ -135,6 +140,13 @@ module.exports = {
                 await Event.deleteOne({
                     _id: args.eventId
                 })
+
+                await User.findByIdAndUpdate(event.createdBy, {
+                    $pullAll: {
+                        createdEvents: [event._id]
+                    }
+                })
+
                 return eventToDelete
             } catch (err) {
                 throw err

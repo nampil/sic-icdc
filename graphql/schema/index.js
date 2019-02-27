@@ -26,7 +26,7 @@ type User {
     email: String!
     password: String!
     role: Int!
-    subs: [Sub] 
+    sub: Sub
     createdMembers: [Member!]
     createdEvents: [Event!]
 }

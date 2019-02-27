@@ -13,6 +13,7 @@ const resolvers = require('./graphql/resolvers');
 const isAuth = require('./middleware/is-auth');
 const history = require('connect-history-api-fallback');
 const webpush = require('web-push');
+const sslRedirect = require('heroku-ssl-redirect');
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load()
@@ -22,42 +23,44 @@ const publicVapidKey = process.env.PUBLIC_VAPID_KEY
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY
 
 const app = express()
-app.use(history({
-    index: '/'
-}));
+
+// app.use(history({
+//     index: '/'
+// }));
 app.use(express.static(__dirname + '/public'))
+//app.use(sslRedirect());
 app.use(isAuth)
 app.use(cors())
 app.use(bodyParser.json())
 
 
-webpush.setVapidDetails(
-    "mailto:nampil.dev@gmail.com",
-    publicVapidKey,
-    privateVapidKey
-);
+// webpush.setVapidDetails(
+//     "mailto:nampil.dev@gmail.com",
+//     publicVapidKey,
+//     privateVapidKey
+// );
 
-app.post('/subscribe', (req, res) => {
-    const subscription = req.body;
+// app.post('/subscribe', (req, res) => {
+//     const subscription = req.body;
 
-    console.log(req.body)
+//     console.log(req.body)
 
-    // Send 201 - resource created
-    res.status(201).json({});
+//     // Send 201 - resource created
+//     res.status(201).json({});
 
-    // Create payload
-    const payload = JSON.stringify({
-        title: "ICDC Valencia",
-        body: 'Aqui recibirás notificaciones'
-    });
+//     // Create payload
+//     const payload = JSON.stringify({
+//         title: "ICDC Valencia",
+//         body: 'Aqui recibirás notificaciones'
+//     });
 
-    console.log(payload)
+//     console.log(payload)
 
-    // Pass object into sendNotification
-    webpush
-        .sendNotification(subscription, payload)
-        .catch(err => console.error(err));
-});
+//     // Pass object into sendNotification
+//     webpush
+//         .sendNotification(subscription, payload)
+//         .catch(err => console.error(err));
+// });
 
 const server = new ApolloServer({
     typeDefs,
@@ -91,7 +94,7 @@ server.applyMiddleware({
 
 
 const PORT = process.env.PORT || 4000
-
+mongoose.set('useFindAndModify', false);
 mongoose
     .connect(
         `mongodb+srv://${process.env.MONGO_USER}:${

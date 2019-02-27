@@ -21,10 +21,10 @@ const userSchema = new Schema({
         required: true
 
     },
-    subs: [{
+    sub: {
         type: Schema.Types.ObjectId,
         ref: 'Sub'
-    }],
+    },
     createdMembers: [{
         type: Schema.Types.ObjectId,
         ref: 'Member'

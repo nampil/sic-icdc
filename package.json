@@ -26,6 +26,7 @@
     "graphql-server-express": "^1.4.0",
     "graphql-subscriptions": "^1.0.0",
     "graphql-tool": "^1.0.0",
+    "heroku-ssl-redirect": "0.0.4",
     "ioredis": "^4.6.2",
     "jsonwebtoken": "^8.4.0",
     "merge-graphql-schemas": "^1.5.8",

@@ -263,6 +263,7 @@ self.addEventListener('fetch', function (event) {
 });
 
 self.addEventListener("push", e => {
+
   console.log(e.data.json())
   const data = e.data.json();
   console.log("Push Recieved...");
