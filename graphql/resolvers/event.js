@@ -87,28 +87,28 @@ module.exports = {
                     }
                 })
 
-                // const subs = await Sub.find()
+                const subs = await Sub.find()
 
-                // subs.map(sub => {
-                //     const payload = JSON.stringify({
-                //         title: "Nuevo Evento en ICDC",
-                //         body: `Avisa a Nohel por fa`
-                //     });
+                subs.map(sub => {
+                    const payload = JSON.stringify({
+                        title: "Nuevo Evento en ICDC",
+                        body: `Avisa a Nohel por fa`
+                    });
 
-                //     const subcription = {
-                //         endpoint: sub.endpoint,
-                //         expirationTime: sub.expirationTime,
-                //         keys: {
-                //             p256dh: sub.p256dhKey,
-                //             auth: sub.authKey
-                //         }
-                //     }
-                //     // Pass object into sendNotification
-                //     webpush
-                //         .sendNotification(subcription, payload)
-                //         .catch(err => console.error(err));
+                    const subcription = {
+                        endpoint: sub.endpoint,
+                        expirationTime: sub.expirationTime,
+                        keys: {
+                            p256dh: sub.p256dhKey,
+                            auth: sub.authKey
+                        }
+                    }
+                    // Pass object into sendNotification
+                    webpush
+                        .sendNotification(subcription, payload)
+                        .catch(err => console.error(err));
 
-                // })
+                })
 
                 return createdEvent;
             } catch (err) {
