@@ -95,6 +95,8 @@ module.exports = {
                         body: `Avisa a Nohel por fa`
                     });
 
+                    console.log(sub)
+
                     const subcription = {
                         endpoint: sub.endpoint,
                         expirationTime: sub.expirationTime,

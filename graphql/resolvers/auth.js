@@ -180,9 +180,6 @@ module.exports = {
             //     throw new Error('No Autorizado')
             // }
 
-
-
-
             try {
                 const user = await User.findOne({
                     _id: req.userId
@@ -200,32 +197,36 @@ module.exports = {
                         ...subToreturn._doc,
                         _id: subToreturn.id
                     }
+                } else {
+
+                    const subscription = new Sub({
+                        endpoint: args.newSubInput.endpoint,
+                        expirationTime: args.newSubInput.expirationTime,
+                        p256dhKey: args.newSubInput.p256dhKey,
+                        authKey: args.newSubInput.authKey
+
+                    })
+
+
+
+                    const result = await subscription.save()
+
+                    let userToAddSub = await User.findById(req.userId);
+
+                    userToAddSub.sub = result
+                    await userToAddSub.save()
+
+
+
+                    return {
+                        ...result._doc,
+                        _id: result.id
+                    }
+
                 }
 
 
-                const subscription = new Sub({
-                    endpoint: args.newSubInput.endpoint,
-                    expirationTime: args.newSubInput.expirationTime,
-                    p256dhKey: args.newSubInput.p256dhKey,
-                    authKey: args.newSubInput.authKey
 
-                })
-
-
-
-                const result = await subscription.save()
-
-                let userToAddSub = await User.findById(req.userId);
-
-                userToAddSub.sub = result
-                await userToAddSub.save()
-
-
-
-                return {
-                    ...result._doc,
-                    _id: result.id
-                }
 
             } catch (error) {
                 console.log(error)

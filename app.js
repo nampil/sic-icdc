@@ -34,11 +34,11 @@ app.use(cors())
 app.use(bodyParser.json())
 
 
-// webpush.setVapidDetails(
-//     "mailto:nampil.dev@gmail.com",
-//     publicVapidKey,
-//     privateVapidKey
-// );
+webpush.setVapidDetails(
+    "mailto:nampil.dev@gmail.com",
+    publicVapidKey,
+    privateVapidKey
+);
 
 // app.post('/subscribe', (req, res) => {
 //     const subscription = req.body;
