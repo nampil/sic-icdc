@@ -40,28 +40,6 @@ webpush.setVapidDetails(
     privateVapidKey
 );
 
-// app.post('/subscribe', (req, res) => {
-//     const subscription = req.body;
-
-//     console.log(req.body)
-
-//     // Send 201 - resource created
-//     res.status(201).json({});
-
-//     // Create payload
-//     const payload = JSON.stringify({
-//         title: "ICDC Valencia",
-//         body: 'Aqui recibirás notificaciones'
-//     });
-
-//     console.log(payload)
-
-//     // Pass object into sendNotification
-//     webpush
-//         .sendNotification(subscription, payload)
-//         .catch(err => console.error(err));
-// });
-
 const server = new ApolloServer({
     typeDefs,
     resolvers,

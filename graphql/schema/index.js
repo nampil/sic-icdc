@@ -4,6 +4,12 @@ type Subscription {
     newEvent: Event
 }
 
+type Notification{
+    title: String!
+    msg: String!
+    subId: String!
+}
+
 type Member {
     _id: ID!
     name: String!
@@ -26,14 +32,14 @@ type User {
     email: String!
     password: String!
     role: Int!
-    sub: Sub
+    subs: [Sub]
     createdMembers: [Member!]
     createdEvents: [Event!]
 }
 
 type Sub {
-    _id: ID!
-    endpoint: String!
+    _id: ID
+    endpoint: String
     expirationTime: Int
     p256dhKey: String
     authKey: String
@@ -162,6 +168,12 @@ input NewSubInput{
 
 }
 
+input SendNotificationInput {
+    subsIds: [String!]!
+    title: String!
+    msg: String!
+}
+
 type RootQuery {
     subs: [Sub!]!
     guests: [Guest!]!
@@ -171,9 +183,10 @@ type RootQuery {
     login(email: String!, password: String!): AuthData
     relogin:AuthData!
     events: [Event!]!
+    sendNotification(sendNotificationInput: SendNotificationInput): Notification
 }
 type RootMutation {
-    createSub(newSubInput: NewSubInput): Sub
+    addSub(newSubInput: NewSubInput): Sub
     createGuest(guestInput: GuestInput): Guest
     updateGuest(guestId: ID! guestInput: GuestInput): Guest!
     deleteGuest(guestId: ID!): Guest!

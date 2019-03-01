@@ -71,10 +71,14 @@ const subs = async subsIds => {
             _id: {
                 $in: subsIds
             }
-        })
+        });
+
         return subs.map(sub => {
-            return transformSub(sub)
-        })
+            return transformSub(sub);
+        });
+
+
+
 
     } catch (error) {
         throw error
@@ -148,7 +152,7 @@ const transformSub = sub => {
 
 exports.events = events;
 exports.members = members;
-exports.subs = subs;
+exports.subscription = subs;
 exports.transformMember = transformMember;
 exports.transformEvent = transformEvent;
 exports.transformGuest = transformGuest;

@@ -5,9 +5,8 @@ const {
     events,
     members,
     transformUser,
-    subs
+    subscription
 } = require('../resolvers/merge')
-
 const jwt = require('jsonwebtoken');
 const webpush = require('web-push');
 
@@ -119,7 +118,7 @@ module.exports = {
                     _id: user.id,
                     createdMembers: members.bind(this, user._doc.createdMembers),
                     createdEvents: events.bind(this, user._doc.createdEvents),
-                    subs: subs.bind(this, user._doc.subs)
+                    subs: subscription.bind(this, user._doc.subs)
                 }
 
             } catch (err) {
@@ -136,13 +135,12 @@ module.exports = {
 
 
                 return users.map(user => {
-
                     return {
                         ...user._doc,
                         _id: user.id,
                         createdMembers: members.bind(this, user._doc.createdMembers),
                         createdEvents: events.bind(this, user._doc.createdEvents),
-                        subs: subs.bind(this, user._doc.subs)
+                        subs: subscription.bind(this, user._doc.subs)
                     }
                 })
 
@@ -173,32 +171,20 @@ module.exports = {
 
     Mutation: {
 
-        createSub: async (_, args, {
+        addSub: async (_, args, {
             req
         }) => {
             // if (!req.isAuth) {
             //     throw new Error('No Autorizado')
             // }
+            //throw new Error('No se encontró este usuario')
 
             try {
-                const user = await User.findOne({
-                    _id: req.userId
+                const sub = await Sub.findOne({
+                    endpoint: args.newSubInput.endpoint
                 });
 
-                if (!user) {
-                    throw new Error('No se encontró este usuario')
-                }
-
-                if (user.sub && user.sub !== '') {
-
-                    subToreturn = await Sub.findById(user.sub);
-
-                    return {
-                        ...subToreturn._doc,
-                        _id: subToreturn.id
-                    }
-                } else {
-
+                if (!sub) {
                     const subscription = new Sub({
                         endpoint: args.newSubInput.endpoint,
                         expirationTime: args.newSubInput.expirationTime,
@@ -206,27 +192,25 @@ module.exports = {
                         authKey: args.newSubInput.authKey
 
                     })
-
-
-
                     const result = await subscription.save()
+                    let userToAddSub = await User.findByIdAndUpdate({
+                        _id: req.userId
+                    });
 
-                    let userToAddSub = await User.findById(req.userId);
-
-                    userToAddSub.sub = result
+                    userToAddSub.subs.push(result)
                     await userToAddSub.save()
-
-
-
                     return {
                         ...result._doc,
                         _id: result.id
                     }
-
+                } else {
+                    let userToAddSub = await User.findByIdAndUpdate({
+                        _id: req.userId
+                    });
+                    userToAddSub.subs.push(sub)
+                    await userToAddSub.save()
+                    return sub
                 }
-
-
-
 
             } catch (error) {
                 console.log(error)

@@ -95,8 +95,6 @@ module.exports = {
                         body: `Avisa a Nohel por fa`
                     });
 
-                    console.log(sub)
-
                     const subcription = {
                         endpoint: sub.endpoint,
                         expirationTime: sub.expirationTime,
@@ -108,7 +106,7 @@ module.exports = {
                     // Pass object into sendNotification
                     webpush
                         .sendNotification(subcription, payload)
-                        .catch(err => console.error(err));
+                        .catch(err => console.error(err.statusCode));
 
                 })
 
