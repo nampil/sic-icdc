@@ -29,7 +29,7 @@ const userLoader = new DataLoader(userIds => {
 });
 
 const subLoader = new DataLoader(subId => {
-    return sub(userIds)
+    return sub(subId)
 })
 
 
@@ -86,7 +86,7 @@ const subs = async subsIds => {
 }
 
 
-const user = async (userId, eventId) => {
+const user = async (userId) => {
 
     try {
         const userToEval = await userLoader.load(userId.toString())
@@ -95,6 +95,7 @@ const user = async (userId, eventId) => {
             _id: userToEval.id,
             createdMembers: () => memberLoader.loadMany(userToEval._doc.createdMembers),
             createdEvents: () => eventLoader.loadMany(userToEval._doc.createdEvents),
+            subs: () => subLoader.loadMany(userToEval._doc.subs),
         };
 
     } catch (err) {

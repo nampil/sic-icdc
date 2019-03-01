@@ -17,6 +17,9 @@ const subSchema = new Schema({
     authKey: {
         type: String,
     },
+    userId: {
+        type: String
+    }
 
 });
 

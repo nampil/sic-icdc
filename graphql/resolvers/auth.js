@@ -174,10 +174,11 @@ module.exports = {
         addSub: async (_, args, {
             req
         }) => {
-            // if (!req.isAuth) {
-            //     throw new Error('No Autorizado')
-            // }
-            //throw new Error('No se encontró este usuario')
+            if (!req.isAuth) {
+                throw new Error('No Autorizado')
+            }
+            // throw new Error('No se encontró este usuario')
+
 
             try {
                 const sub = await Sub.findOne({
@@ -189,7 +190,8 @@ module.exports = {
                         endpoint: args.newSubInput.endpoint,
                         expirationTime: args.newSubInput.expirationTime,
                         p256dhKey: args.newSubInput.p256dhKey,
-                        authKey: args.newSubInput.authKey
+                        authKey: args.newSubInput.authKey,
+                        userId: req.userId
 
                     })
                     const result = await subscription.save()

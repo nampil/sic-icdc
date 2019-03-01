@@ -1,9 +1,15 @@
 const {
     subscription
 } = require('./merge')
+const pubsub = require('./pupsub')
+
+const Sub = require('../../model/sub')
+const User = require('../../model/user')
 
 
 const webpush = require('web-push')
+
+const USER_UPDATED = 'user_updated'
 
 module.exports = {
     Query: {
@@ -22,7 +28,7 @@ module.exports = {
                     }
                 }
 
-                console.log(subcription)
+
 
 
                 const payload = JSON.stringify({
@@ -33,8 +39,42 @@ module.exports = {
                 console.log(payload)
                 // Pass object into sendNotification
                 webpush
-                    .sendNotification(subcription, payload).then(res => console.log(res))
-                    .catch(err => console.error(err));
+                    .sendNotification(subcription, payload).then(res => console.log(res.statusCode))
+                    .catch(async err => {
+                        console.error(err.statusCode)
+                        const endpointToDelete = err.endpoint
+
+                        await Sub.findOneAndRemove({
+                            endpoint: endpointToDelete
+                        }).then(async res => {
+                            console.log(res.userId)
+                            console.log(res._id)
+
+                            await User.findByIdAndUpdate({
+                                    _id: res.userId
+                                }, {
+                                    "$pull": {
+                                        "subs": res._id
+                                    }
+                                }, {
+                                    safe: true,
+                                    multi: true,
+                                    new: true
+                                },
+                                function (err, doc) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+
+                                    }
+                                }
+
+                            )
+
+
+                        }).catch(err => console.log(err))
+
+                    });
             })
 
 

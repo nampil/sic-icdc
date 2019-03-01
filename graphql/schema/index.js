@@ -2,6 +2,7 @@ const typeDefs = `
 
 type Subscription {
     newEvent: Event
+    userUpdated: User
 }
 
 type Notification{
@@ -43,6 +44,7 @@ type Sub {
     expirationTime: Int
     p256dhKey: String
     authKey: String
+    userId: String
 }
 
 type AuthData{
