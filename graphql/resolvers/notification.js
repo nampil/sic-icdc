@@ -33,10 +33,7 @@ module.exports = {
 
                 const payload = JSON.stringify({
                     title: args.sendNotificationInput.title,
-                    body: args.sendNotificationInput.msg,
-                    tag: 'ICDC-Notification',
-                    renotify: true,
-                    vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500]
+                    body: args.sendNotificationInput.msg
                 })
 
                 console.log(payload)

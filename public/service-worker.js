@@ -270,6 +270,8 @@ self.addEventListener("push", e => {
   self.registration.showNotification(data.title, {
     body: data.body,
     icon: "https://admin-icdc.herokuapp.com/img/icons/icdc-icon-144x144.png",
-    requireInteraction: true
+    requireInteraction: true,
+    tag: 'icdc-msg',
+    silent: false
   });
 });
