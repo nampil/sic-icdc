@@ -75,7 +75,7 @@ module.exports = {
                 creator.createdEvents.push(event);
                 await creator.save()
 
-                console.log(createdEvent.title);
+
 
                 pubsub.publish(NEW_EVENT, {
                     newEvent: {

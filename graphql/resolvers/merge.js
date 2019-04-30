@@ -73,9 +73,11 @@ const subs = async subsIds => {
             }
         });
 
-        return subs.map(sub => {
+        const subsArray = subs.map(sub => {
             return transformSub(sub);
         });
+
+        return subsArray
 
 
 
@@ -145,6 +147,7 @@ const transformGuest = guest => {
 };
 
 const transformSub = sub => {
+
     return {
         ...sub._doc,
         _id: sub.id
@@ -153,7 +156,7 @@ const transformSub = sub => {
 
 exports.events = events;
 exports.members = members;
-exports.subscription = subs;
+exports.Subscription = subs;
 exports.transformMember = transformMember;
 exports.transformEvent = transformEvent;
 exports.transformGuest = transformGuest;

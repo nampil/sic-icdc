@@ -51,6 +51,10 @@ module.exports = {
                 relatives: args.memberInput.relatives,
                 gender: args.memberInput.gender,
                 serveIn: args.memberInput.serveIn,
+                how: args.memberInput.how,
+                discipleship: args.memberInput.discipleship,
+                baptized: args.memberInput.baptized,
+                notes: args.memberInput.notes,
                 createdBy: req.userId
             });
             let createdMembers;
@@ -120,7 +124,11 @@ module.exports = {
                 member.gender = args.memberInputUpdate.gender
                 member.serveIn = args.memberInputUpdate.serveIn
                 member.relatives = args.memberInputUpdate.relatives
-                member.createdBy = req.UserId
+                member.how = args.memberInputUpdate.how,
+                    member.discipleship = args.memberInputUpdate.discipleship,
+                    member.baptized = args.memberInputUpdate.baptized,
+                    member.notes = args.memberInputUpdate.notes,
+                    member.createdBy = req.UserId
 
                 await member.save()
                 return member

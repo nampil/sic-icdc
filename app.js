@@ -1,20 +1,21 @@
-const http = require('http');
+const http = require('http')
 const {
     ApolloServer
-} = require('apollo-server-express');
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+} = require('apollo-server-express')
+const express = require('express')
+const cors = require('cors')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 const {
     typeDefs
-} = require('./graphql/schema');
-const resolvers = require('./graphql/resolvers');
-const isAuth = require('./middleware/is-auth');
-const history = require('connect-history-api-fallback');
-const webpush = require('web-push');
-const sslRedirect = require('heroku-ssl-redirect');
+} = require('./graphql/schema')
+const resolvers = require('./graphql/resolvers')
+const isAuth = require('./middleware/is-auth')
+const history = require('connect-history-api-fallback')
+const webpush = require('web-push')
+const sslRedirect = require('heroku-ssl-redirect')
 
+const app = express()
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load()
 }
@@ -22,23 +23,26 @@ if (process.env.NODE_ENV !== 'production') {
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY
 
-const app = express()
+if (process.env.NODE_ENV === 'production') {
 
-app.use(history({
-    index: '/'
-}));
-app.use(express.static(__dirname + '/public'))
-app.use(sslRedirect());
+    app.use(
+        history({
+            index: '/'
+        })
+    )
+    app.use(sslRedirect())
+    app.use(express.static(__dirname + '/public'))
+}
+
 app.use(isAuth)
 app.use(cors())
 app.use(bodyParser.json())
 
-
 webpush.setVapidDetails(
-    "mailto:nampil.dev@gmail.com",
+    'mailto:nampil.dev@gmail.com',
     publicVapidKey,
     privateVapidKey
-);
+)
 
 const server = new ApolloServer({
     typeDefs,
@@ -55,8 +59,7 @@ const server = new ApolloServer({
             }
         } else {
             return {
-                req,
-
+                req
             }
         }
     },
@@ -70,9 +73,8 @@ server.applyMiddleware({
     app
 })
 
-
 const PORT = process.env.PORT || 4000
-mongoose.set('useFindAndModify', false);
+mongoose.set('useFindAndModify', false)
 mongoose
     .connect(
         `mongodb+srv://${process.env.MONGO_USER}:${
@@ -90,7 +92,6 @@ mongoose
 
 const httpServer = http.createServer(app)
 server.installSubscriptionHandlers(httpServer)
-
 
 httpServer.listen(PORT, () => {
     console.log(

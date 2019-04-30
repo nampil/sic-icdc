@@ -20,6 +20,10 @@ type Member {
     bdate: String
     relatives: [String]
     gender: String
+    how: String
+    discipleship: Boolean
+    baptized: Boolean
+    notes: String
     serveIn: [String]
     createdBy: User!
     
@@ -36,6 +40,7 @@ type User {
     subs: [Sub]
     createdMembers: [Member!]
     createdEvents: [Event!]
+    resetToken: String
 }
 
 type Sub {
@@ -124,6 +129,11 @@ input MemberInput {
     relatives: [String]
     gender: String
     serveIn: [String]
+    how: String
+    discipleship: Boolean
+    baptized: Boolean
+    notes: String
+
 
 }
 
@@ -136,6 +146,10 @@ input MemberInputUpdate {
     relatives: [String]
     gender: String
     serveIn: [String]
+    how: String
+    discipleship: Boolean
+    baptized: Boolean
+    notes: String
 
 }
 input EventInputUpdate{
@@ -176,7 +190,12 @@ input SendNotificationInput {
     msg: String!
 }
 
+input RememberPassInput {
+    email: String!
+}
+
 type RootQuery {
+    
     subs: [Sub!]!
     guests: [Guest!]!
     members:[Member!]!
@@ -184,10 +203,12 @@ type RootQuery {
     user(name: String, _id: String): User!
     login(email: String!, password: String!): AuthData
     relogin:AuthData!
+    rememberPass(rememberPassInput: RememberPassInput): User
     events: [Event!]!
     sendNotification(sendNotificationInput: SendNotificationInput): Notification
 }
 type RootMutation {
+    
     addSub(newSubInput: NewSubInput): Sub
     createGuest(guestInput: GuestInput): Guest
     updateGuest(guestId: ID! guestInput: GuestInput): Guest!

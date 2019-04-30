@@ -34,6 +34,19 @@ const memberSchema = new Schema({
     serveIn: [{
         type: String
     }],
+
+    how: {
+        type: String
+    },
+    discipleship: {
+        type: Boolean
+    },
+    baptized: {
+        type: Boolean
+    },
+    notes: {
+        type: String
+    },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'User'
