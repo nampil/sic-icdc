@@ -30,9 +30,13 @@ if (process.env.NODE_ENV === 'production') {
             index: '/'
         })
     )
+
     app.use(sslRedirect())
     app.use(express.static(__dirname + '/public'))
+
 }
+
+
 
 app.use(isAuth)
 app.use(cors())

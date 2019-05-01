@@ -39,10 +39,12 @@ const memberSchema = new Schema({
         type: String
     },
     discipleship: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     baptized: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     notes: {
         type: String
